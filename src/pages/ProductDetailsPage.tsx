@@ -89,10 +89,6 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
     }];
   });
 
-  console.log(matchingData?.map((el: any) => el), "12345");
-
-
-
   const totalQty = matchingData?.reduce((sum: number, item: any) => sum + (item?.cartQty || 0), 0);
 
   // console.log(matchingData, "Matching Data");
@@ -182,26 +178,12 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
     );
   }
 
-  // const handleAddCart = async (id: any, qty: any) => {
-  //   console.log('hgjhgjhgjhgjhg')
-  //   const payload = {
-  //     cart: getCartId,
-  //     user: getUserId,
-  //     vendor: vendorId,
-  //     quantity: qty,
-  //     product: id,
-  //     created_by: getUserName ? getUserName : 'user',
-  //     ...(selectedVariant?.id ? { product_variant: selectedVariant?.id } : ''),
-  //     ...(selectedSize?.id ? { product_size: selectedSize?.id } : ''),
-  //   };
+  const getProductPayloadKey = () => {
+    if (selectedSize?.id) return { product_size: selectedSize?.id };
+    if (selectedVariant?.id) return { product_variant: selectedVariant?.id };
+    return { product: product?.id };
+  };
 
-  //   try {
-  //     const response = await getProductVariantCartItemUpdate('', payload);
-  //     if (response) {
-  //       queryClient.invalidateQueries(['getCartitemsData'] as InvalidateQueryFilters);
-  //     }
-  //   } catch (error) { }
-  // };
 
   const handleAddCart = async (id: any, qty: any) => {
     const payload: any = {
@@ -210,22 +192,23 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
       vendor: vendorId,
       quantity: qty,
       created_by: getUserName ? getUserName : 'user',
+      ...getProductPayloadKey(),
     };
 
-    // First priority: selectedSize
-    if (selectedSize?.id) {
-      // payload.product = id;
-      payload.product_size = selectedSize.id;
-    }
-    // Second priority: selectedVariant
-    else if (selectedVariant?.id) {
-      // payload.product = id;
-      payload.product_variant = selectedVariant.id;
-    }
-    // Else: just product
-    else {
-      payload.product = id;
-    }
+    // // First priority: selectedSize
+    // if (selectedSize?.id) {
+    //   // payload.product = id;
+    //   payload.product_size = selectedSize.id;
+    // }
+    // // Second priority: selectedVariant
+    // else if (selectedVariant?.id) {
+    //   // payload.product = id;
+    //   payload.product_variant = selectedVariant.id;
+    // }
+    // // Else: just product
+    // else {
+    //   payload.product = id;
+    // }
 
     try {
       const response = await getProductVariantCartItemUpdate('', payload);
@@ -253,27 +236,6 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
     };
     onAddToCart(newCartItem);
   };
-
-  // const handleUpdateCart = async (id: any, type: any, qty: any) => {
-  //   try {
-  //     if (qty === 1 && type === 'decrease') {
-  //       const updateApi = await deleteCartitemsApi(`${id}`);
-  //       if (updateApi) {
-  //         queryClient.invalidateQueries(['getCartitemsData'] as InvalidateQueryFilters);
-  //       }
-  //     } else {
-  //       if (!selectedVariant) {
-  //         const response = await updateCartitemsApi(`${id}/${type}/`);
-  //         if (response) {
-  //           queryClient.invalidateQueries(['getCartitemsData'] as InvalidateQueryFilters);
-  //         }
-  //       } else {
-  //         handleAddCart(id, 1);
-  //       }
-  //     }
-  //   } catch (error) { }
-  // };
-
 
   const handleUpdateCart = async (id: any, type: "increase" | "decrease", qty: number) => {
     try {
@@ -357,6 +319,82 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
     return 0;
   })();
 
+  const getAvailability = () => {
+    if (selectedSize) {
+      if (!selectedSize.product_size_status)
+        return { disabled: true, text: "Size Not Available" };
+
+      if (Number(selectedSize.product_size_stock_quantity) === 0)
+        return { disabled: true, text: "Out of Stock" };
+
+      return {
+        disabled: false,
+        text: `Add to Cart • In Stock (${selectedSize.product_size_stock_quantity})`,
+      };
+    }
+
+    if (selectedVariant) {
+      if (!selectedVariant.product_variant_status)
+        return { disabled: true, text: "Variant Not Available" };
+
+      if (Number(selectedVariant.product_variant_stock_quantity) === 0)
+        return { disabled: true, text: "Out of Stock" };
+
+      if (selectedVariant?.sizes?.length > 0)
+        return { disabled: true, text: "Select Size" };
+
+      return {
+        disabled: false,
+        text: `Add to Cart • In Stock (${selectedVariant.product_variant_stock_quantity})`,
+      };
+    }
+
+    if (!product?.status)
+      return { disabled: true, text: "Not Available" };
+
+    if (Number(product?.stock_quantity) === 0)
+      return { disabled: true, text: "Out of Stock" };
+
+    if (product?.variants?.length > 0)
+      return { disabled: true, text: "Select Variant" };
+
+    return {
+      disabled: false,
+      text: `Add to Cart • In Stock (${product?.stock_quantity})`,
+    };
+  };
+
+  const availability = getAvailability();
+
+  const getCurrentSelectionKey = () => {
+    if (selectedSize?.id) {
+      return { type: "size", id: selectedSize.id };
+    }
+    if (selectedVariant?.id) {
+      return { type: "variant", id: selectedVariant.id };
+    }
+    return { type: "product", id: product?.id };
+  };
+
+
+  const currentKey = getCurrentSelectionKey();
+
+  const matchedCartItem = getCartitemsData?.data?.data?.find((item: any) => {
+    if (currentKey.type === "size") {
+      return item?.product_size === currentKey.id;
+    }
+
+    if (currentKey.type === "variant") {
+      return item?.product_variant === currentKey.id;
+    }
+
+    return item?.product === currentKey.id;
+  });
+
+  const cartQty = matchedCartItem?.quantity || 0;
+
+
+
 
   return (
     <>
@@ -425,18 +463,11 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
               {/* <p className="text-lg text-gray-400 mt-2">{productData?.data?.data?.brand_name}</p> */}
             </div>
             <div className="flex items-baseline gap-2 py-2">
-              {/* <span className="text-2xl font-bold text-black">
-                ₹{selectedVariant?.product_variant_price || productData?.data?.data?.price}
-              </span> */}
               <span className="text-2xl font-bold text-black">
                 ₹{selectedPrice}
               </span>
 
-              {/* {productData?.data?.data?.discount && (
-                <span className="text-lg text-gray-500 line-through">
-                  ₹{productData?.data?.data?.discount}
-                </span>
-              )} */}
+
               {selectedDiscount > 0 && (
                 <span className="text-lg text-gray-500 line-through">
                   ₹{selectedDiscount}
@@ -444,7 +475,7 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
               )}
 
             </div>
-            {/* <p className="text-black">{productData?.data?.data?.description}</p> */}
+
             <div dangerouslySetInnerHTML={{ __html: product?.description?.slice(0, 400) }} className="quill-content capitalize text-gray-600 py-2" />
 
 
@@ -453,18 +484,7 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
               {productData?.data?.data?.variants?.length > 0 &&
                 <h3 className="text-lg font-bold text-black">Select Variants</h3>
               }
-              {/* <VariantSelector
-                variants={productData?.data?.data?.variants}
-                selectedVariantId={selectedVariant?.id}
-                onSelect={(variant) => {
-                  setSelectedVariant(variant);
-                  setCurrentImageIndex(0); // Reset image index when variant changes
-                  setSelectedSize(''); // Reset size when color changes
-                }}
-                sizekey={setSelectedSize}
-                selectedSizeId={selectedSize}
-                onSelectSize={setSelectedSize}
-              /> */}
+
               <VariantSelector
                 variants={productData?.data?.data?.variants}
                 selectedVariantId={selectedVariant} // Pass the entire selectedVariant object
@@ -478,7 +498,7 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                 onSelectSize={setSelectedSize}
               />
             </div>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               {matchingData?.map((item: any) => (
                 <div key={item?.id} className="relative bg-white p-3 rounded-lg shadow-sm ">
                   <div className="absolute top-1 right-1 text-gray-600 hover:text-gray-800 cursor-pointer"
@@ -508,58 +528,15 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                   </p>
                 </div>
               ))}
-            </div>
+            </div> */}
 
-            <div className="pt-6 border-t">
+            {/* <div className="pt-6 border-t">
               {matchingData?.length && matchingData[0]?.cartQty > 0 ? (
-                // <div className="flex items-center gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
-                //   <button
-                //     onClick={() =>
-                //       handleUpdateCart(matchingData[0]?.cartId, 'decrease', matchingData[0]?.cartQty)
-                //     }
-                //     className="p-1 rounded-full hover:bg-gray-200"
-                //   >
-                //     <Minus className="h-4 w-4" />
-                //   </button>
-                //   <span>{totalQty ? totalQty : ''}</span>
-                //   <button
-                //     onClick={() => handleUpdateCart(matchingData[0]?.cartId, 'increase', '')}
-                //     className="p-1 rounded-full hover:bg-gray-200"
-                //   >
-                //     <Plus className="h-4 w-4" />
-                //   </button>
-                // </div>
-
-                // <div
-                //   className="flex items-center gap-3 mt-2 p-2 rounded-full border border-gray-400 shadow-md w-max"
-                //   onClick={(e) => e.stopPropagation()}
-                // >
-                //   <button
-                //     onClick={() =>
-                //       handleUpdateCart(matchingData[0]?.cartId, 'decrease', matchingData[0]?.cartQty)
-                //     }
-                //     className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transform hover:scale-110 transition-all"
-                //   >
-                //     <Minus className="h-5 w-5 text-gray-700" />
-                //   </button>
-
-                //   <span className="w-6 text-center font-semibold text-gray-800">
-                //     {totalQty ? totalQty : '0'}
-                //   </span>
-
-                //   <button
-                //     onClick={() => handleUpdateCart(matchingData[0]?.cartId, 'increase', '')}
-                //     className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transform hover:scale-110 transition-all"
-                //   >
-                //     <Plus className="h-5 w-5 text-gray-700" />
-                //   </button>
-                // </div>
-
                 <div
                   className="flex items-center mt-2 px-3 py-2 border border-gray-400 shadow-md rounded-xl bg-white w-max gap-4"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {/* Decrease */}
+
                   <button
                     onClick={() =>
                       handleUpdateCart(matchingData[0]?.cartId, "decrease", matchingData[0]?.cartQty)
@@ -569,12 +546,12 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                     <Minus className="h-4 w-4 text-gray-700" />
                   </button>
 
-                  {/* Quantity */}
+
                   <span className="min-w-[28px] text-center text-lg font-semibold text-gray-800">
                     {totalQty ? totalQty : "0"}
                   </span>
 
-                  {/* Increase */}
+
                   <button
                     onClick={() =>
                       handleUpdateCart(matchingData[0]?.cartId, "increase", 0)
@@ -586,41 +563,15 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                 </div>
 
               ) : (
-                // <LoadingButton
-                //   disabled={!productData?.data?.data?.stock_quantity || productData?.data?.data?.stock_quantity === 0}
-                //   className="px-8 py-3"
-                //   onClick={(e) => {
-                //     handleAddToCart();
-                //     e.stopPropagation();
-                //     if (getUserId) {
-                //       withLoading(() => {
-                //         onAddToCart({
-                //           id: productData?.data?.data?.id,
-                //           variantId: selectedVariant?.id,
-                //           sizeId: selectedSize?.id || '',
-                //           name: productData?.data?.data?.name,
-                //           variantName: selectedVariant?.product_variant_title,
-                //           sizeName: selectedSize?.name || '',
-                //           price: selectedVariant?.product_variant_price || productData?.data?.data?.price,
-                //           image: selectedVariant?.product_variant_image_urls[0] || productData?.data?.data?.image_urls[0],
-                //           quantity: 1,
-                //         });
-                //         handleAddCart(productData?.data?.data?.id, 1);
-                //       });
-                //     } else {
-                //       setSignInModal(true);
-                //     }
-                //   }}
-                // >
-                //   <Plus className="h-5 w-5" />
-                //   {product?.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
-                // </LoadingButton>
-
                 <LoadingButton
-                  disabled={isAddToCartDisabled}
-                  className="px-8 py-3"
+                  disabled={availability.disabled}
+                  className={`px-8 py-3 ${availability.disabled ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
                   onClick={(e) => {
                     e.stopPropagation();
+
+                    if (availability.disabled) return;
+
                     if (!getUserId) {
                       setSignInModal(true);
                       return;
@@ -631,12 +582,14 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                       onAddToCart({
                         id: productData?.data?.data?.id,
                         variantId: selectedVariant?.id,
-                        sizeId: selectedSize?.id || '',
+                        sizeId: selectedSize?.id || "",
                         name: productData?.data?.data?.name,
                         variantName: selectedVariant?.product_variant_title,
-                        sizeName: selectedSize?.name || '',
-                        price: selectedVariant?.product_variant_price || productData?.data?.data?.price,
-                        image: selectedVariant?.product_variant_image_urls[0] || productData?.data?.data?.image_urls[0],
+                        sizeName: selectedSize?.name || "",
+                        price: selectedPrice,
+                        image:
+                          selectedVariant?.product_variant_image_urls[0] ||
+                          productData?.data?.data?.image_urls[0],
                         quantity: 1,
                       });
                       handleAddCart(productData?.data?.data?.id, 1);
@@ -644,12 +597,63 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                   }}
                 >
                   <Plus className="h-5 w-5" />
-                  {product?.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+                  {availability.text}
                 </LoadingButton>
 
 
               )}
+            </div> */}
+
+            <div className="pt-6 border-t">
+              {cartQty > 0 ? (
+                <div
+                  className="flex items-center mt-2 px-3 py-2 border border-gray-400 shadow-md rounded-xl bg-white w-max gap-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    onClick={() =>
+                      handleUpdateCart(matchedCartItem.id, "decrease", cartQty)
+                    }
+                    className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-gray-100"
+                  >
+                    <Minus className="h-4 w-4 text-gray-700" />
+                  </button>
+
+                  <span className="min-w-[28px] text-center text-lg font-semibold text-gray-800">
+                    {cartQty}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      handleUpdateCart(matchedCartItem.id, "increase", cartQty)
+                    }
+                    className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-gray-100"
+                  >
+                    <Plus className="h-4 w-4 text-gray-700" />
+                  </button>
+                </div>
+              ) : (
+                <LoadingButton
+                  disabled={availability.disabled}
+                  className={`px-8 py-3 ${availability.disabled ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!getUserId) {
+                      setSignInModal(true);
+                      return;
+                    }
+                    handleAddToCart();
+                    handleAddCart(product?.id, 1);
+                  }}
+                >
+                  <Plus className="h-5 w-5" />
+                  {availability.text}
+                </LoadingButton>
+              )}
             </div>
+
+
           </div>
         </div>
       </div>
