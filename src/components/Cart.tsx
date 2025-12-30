@@ -156,58 +156,6 @@ export function Cart({ items, onClose, vendorId
   }
 
 
-  // const handleCheckout = async () => {
-
-  //   setLoading(true);
-  //   setErrorMessage('')
-  //   try {
-  //     // If needed: build payload here
-
-  //     const paymentAPi = await postPaymentApi('', {
-  //       customer_phone: user?.data?.contact_number,
-  //       vendor_id: vendorId,
-  //       user_id: user?.data?.id,
-  //     });
-
-  //     if (paymentAPi) {
-  //       const { payment_order_id, final_price } = paymentAPi.data;
-
-  //       const options = {
-  //         key: "rzp_live_vPf7ymd4ScF3Nz",
-  //         amount: final_price * 100,
-  //         currency: "INR",
-  //         name: "Haya Fashion",
-  //         description: "Order Payment",
-  //         order_id: payment_order_id,
-  //         handler: function (response: any) {
-  //           console.log("Payment Success:", response);
-  //           setTimeout(() => {
-  //             onClose();
-  //             window.location.reload();
-  //           }, 2000);
-  //         },
-  //         prefill: {
-  //           name: user?.data?.name,
-  //           email: user?.data?.email,
-  //           contact: user?.data?.contact_number,
-  //         },
-  //         notes: {
-  //           address: "Selected Address",
-  //         },
-  //         theme: {
-  //           color: "#2563eb",
-  //         },
-  //       };
-  //       toast.success("created successfully!");
-  //       const razor = new (window as any).Razorpay(options);
-  //       razor.open();
-  //     }
-  //   } catch (error: any) {
-  //     setErrorMessage(error?.response?.data?.error)
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const RAZOR_PAY_KEY = 'rzp_live_Rn5Eb2XmecwaQN';
 
@@ -292,27 +240,11 @@ export function Cart({ items, onClose, vendorId
       // }, 5000);
     }
   };
-  const totalAmount = getCartItemsProductSizesWithVariantsData?.data?.data?.cart_items?.reduce((acc: number, item: any) => {
+  const totalAmount = getCartItemsProductSizesWithVariantsData?.data?.data?.cart_items?.filter((item: any) => item?.product_details?.status === true && item?.product_details?.quantity > 0)?.reduce((acc: number, item: any) => {
     const price =
       item?.product_details?.price ?? 0;
     return acc + price * (item?.quantity || 1);
   }, 0);
-
-
-
-  // if (getCartItemsProductSizesWithVariantsData?.data?.data?.cart_items?.length === 0) {
-  //   return (
-  //     <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-xl p-6 z-30">
-  //       <div className="flex justify-between items-center mb-6">
-  //         <h2 className="text-xl font-semibold">Your Cart</h2>
-  //         <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-  //           <X className="h-6 w-6" />
-  //         </button>
-  //       </div>
-  //       <p className="text-gray-500 text-center">Your cart is empty</p>
-  //     </div>
-  //   );
-  // }
 
   useEffect(() => {
     if (data?.data?.length) {
@@ -367,74 +299,109 @@ export function Cart({ items, onClose, vendorId
                   sortName: (item?.product_details?.name || "").toLowerCase(),
                 }))
                 ?.sort((a, b) => a.sortName.localeCompare(b.sortName))
-                ?.map((item: any) => (
-                  <div
-                    key={item?.Aid}
-                    className="flex justify-between p-4 bg-gray-50 rounded-lg"
-                  >
-                    <div className='flex items-center gap-4'>
-                      <img
-                        src={
-                          item?.product_details?.image_urls?.[0] ??
-                          // item?.product_variant_image_urls?.[0] ??
-                          "https://semantic-ui.com/images/wireframe/image.png"
+                ?.map((item: any) => {
+                  // ✅ AVAILABILITY LOGIC
+                  const isAvailable =
+                    item?.product_details?.status === true &&
+                    Number(item?.quantity) > 0;
+
+                  return (
+                    <div
+                      key={item?.Aid}
+                      className={`flex justify-between p-4 rounded-lg relative transition
+          ${isAvailable
+                          ? "bg-gray-50"
+                          : "bg-gray-200 opacity-60 pointer-events-none"
                         }
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold capitalize">
-                          {item?.product_details?.name || ''}
-                        </h3>
-                        <p className="text-gray-600 py-1 font-bold">
-                          ₹{item?.product_details?.price || ''}
-                        </p>
-                        {/* <div className="flex items-center gap-2 mt-2">
-                          <button
-                            onClick={() => handleUpdateCart(item?.id, 'decrease', item?.quantity)}
-                            className="p-1 rounded-full hover:bg-gray-200"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          <span>{item?.quantity}</span>
-                          <button
-                            onClick={() => handleUpdateCart(item?.id, 'increase', '')}
-                            className="p-1 rounded-full hover:bg-gray-200"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </button>
-                        </div> */}
+        `}
+                    >
+                      <div className="flex items-center gap-4 w-full">
 
-                        <div className="mt-2">
-                          <div className="flex items-center justify-between w-[110px] px-3 py-1.5 border border-gray-300 rounded-xl shadow-sm bg-white">
+                        {/* IMAGE + NOT AVAILABLE OVERLAY */}
+                        <div className="relative">
+                          <img
+                            src={
+                              item?.product_details?.image_urls?.[0] ??
+                              "https://semantic-ui.com/images/wireframe/image.png"
+                            }
+                            className="w-20 h-20 object-cover rounded"
+                            alt="product"
+                          />
 
-                            {/* Decrease */}
-                            <button
-                              onClick={() => handleUpdateCart(item?.id, 'decrease', item?.quantity)}
-                              className="p-1 hover:bg-gray-100 rounded-lg transition"
-                            >
-                              <Minus className="h-4 w-4" />
-                            </button>
-
-                            {/* Quantity */}
-                            <span className="text-base font-semibold w-6 text-center">
-                              {item?.quantity}
-                            </span>
-
-                            {/* Increase */}
-                            <button
-                              onClick={() => handleUpdateCart(item?.id, 'increase', '')}
-                              className="p-1 hover:bg-gray-100 rounded-lg transition"
-                            >
-                              <Plus className="h-4 w-4" />
-                            </button>
-
-                          </div>
+                          {!isAvailable && (
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded">
+                              <span className="text-white text-xs font-semibold">
+                                Not Available
+                              </span>
+                            </div>
+                          )}
                         </div>
 
+                        {/* PRODUCT INFO */}
+                        <div className="flex-1">
+                          <h3 className="font-semibold capitalize">
+                            {item?.product_details?.name || ""}
+                          </h3>
+
+                          <p className="text-gray-600 py-1 font-bold">
+                            ₹{item?.product_details?.price || ""}
+                          </p>
+
+                          {/* STATUS TEXT */}
+                          <p
+                            className={`text-xs font-medium
+                ${isAvailable ? "text-green-600" : "text-red-500"}
+              `}
+                          >
+                            {isAvailable ? "" : "Not Available"}
+                          </p>
+
+                          {/* QTY CONTROLS */}
+                          <div className="mt-2">
+                            <div className="flex items-center justify-between w-[110px] px-3 py-1.5 border border-gray-300 rounded-xl shadow-sm bg-white">
+
+                              <button
+                                disabled={!isAvailable}
+                                onClick={() =>
+                                  handleUpdateCart(item?.id, "decrease", item?.quantity)
+                                }
+                                className={`p-1 rounded-lg transition
+                    ${isAvailable
+                                    ? "hover:bg-gray-100"
+                                    : "opacity-40 cursor-not-allowed"
+                                  }
+                  `}
+                              >
+                                <Minus className="h-4 w-4" />
+                              </button>
+
+                              <span className="text-base font-semibold w-6 text-center">
+                                {item?.quantity}
+                              </span>
+
+                              <button
+                                disabled={!isAvailable}
+                                onClick={() =>
+                                  handleUpdateCart(item?.id, "increase", "")
+                                }
+                                className={`p-1 rounded-lg transition
+                    ${isAvailable
+                                    ? "hover:bg-gray-100"
+                                    : "opacity-40 cursor-not-allowed"
+                                  }
+                  `}
+                              >
+                                <Plus className="h-4 w-4" />
+                              </button>
+
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+
 
             </div>
 
