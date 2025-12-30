@@ -21,36 +21,55 @@ export function VariantSelector({
 
   // Find the selected variant to pass its sizes to SizeSelector
   const selectedVariant = variants?.find((variant) => variant.id === selectedVariantId?.id);
-
+console.log(variants)
   return (
     <div className="space-y-3">
 
       {variants?.length > 0 && (
         <>
-          <label className="block text-sm font-medium text-gray-700">variants</label>
-          <span className="flex gap-3">
-            {variants?.map((variant) => (
-              <div className="flex flex-wrap gap-3" key={variant?.id}>
-                <button
-                  onClick={() => {
-                    onSelect(variant);
-                    sizekey('');
-                  }}
-                  className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
-              ${selectedVariantId?.id === variant?.id
-                      ? 'border-blue-500 ring-2 ring-blue-500 ring-offset-2'
-                      : 'border-gray-200 hover:border-gray-300'}`}
-                  title={variant?.product_variant_title}
-                >
-                  <img
-                    src={variant?.product_variant_image_urls[0] ? variant?.product_variant_image_urls[0] : emptyImage}
-                    alt={variant.product_variant_title}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              </div>
-            ))}
-          </span>
+          {/* <label className="block text-sm font-medium text-gray-700">variants</label> */}
+       <span className="flex gap-4 flex-wrap">
+  {variants?.map((variant) => (
+    <div
+      key={variant?.id}
+      className="flex flex-col items-center gap-1"
+    >
+      <button
+        onClick={() => {
+          onSelect(variant);
+          sizekey('');
+        }}
+        className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all
+          ${
+            selectedVariantId?.id === variant?.id
+              ? 'border-blue-500 ring-2 ring-blue-500 ring-offset-2'
+              : 'border-gray-200 hover:border-gray-300'
+          }`}
+      >
+        <img
+          src={
+            variant?.product_variant_image_urls?.[0] || emptyImage
+          }
+          alt={variant?.product_variant_title}
+          className="w-full h-full object-cover"
+        />
+      </button>
+
+      {/* ✅ TITLE */}
+      <span
+        className={`text-xs font-medium text-center capitalize
+          ${
+            selectedVariantId?.id === variant?.id
+              ? 'text-blue-600'
+              : 'text-gray-700'
+          }`}
+      >
+        {variant?.product_variant_title}
+      </span>
+    </div>
+  ))}
+</span>
+
         </>
       )}
       <SizeSelector

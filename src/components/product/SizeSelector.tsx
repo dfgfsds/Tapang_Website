@@ -10,7 +10,7 @@ export function SizeSelector({ sizes, selectedSizeId, onSelect }: SizeSelectorPr
   return (
     <div className="space-y-3">
       {sizes?.length > 0 &&
-      <label className="block text-sm font-medium text-black">Sizes</label>
+      <label className="text-lg font-bold text-black">Sizes</label>
       }
       <div className="flex flex-wrap gap-2">
         {sizes?.length > 0 ? (

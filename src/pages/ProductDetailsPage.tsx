@@ -129,6 +129,22 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
     }
   })();
 
+  const selectedPrice = (() => {
+    // 1️⃣ Size price highest priority
+    if (selectedSize?.product_size_price) {
+      return Number(selectedSize.product_size_price);
+    }
+
+    // 2️⃣ Variant price
+    if (selectedVariant?.product_variant_price) {
+      return Number(selectedVariant.product_variant_price);
+    }
+
+    // 3️⃣ Product base price
+    return Number(productData?.data?.data?.price || 0);
+  })();
+
+
 
   if (productData.isLoading) {
     return (
@@ -389,9 +405,13 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
               {/* <p className="text-lg text-gray-400 mt-2">{productData?.data?.data?.brand_name}</p> */}
             </div>
             <div className="flex items-baseline gap-2 py-2">
-              <span className="text-2xl font-bold text-black">
+              {/* <span className="text-2xl font-bold text-black">
                 ₹{selectedVariant?.product_variant_price || productData?.data?.data?.price}
+              </span> */}
+              <span className="text-2xl font-bold text-black">
+                ₹{selectedPrice}
               </span>
+
               {productData?.data?.data?.discount && (
                 <span className="text-lg text-gray-500 line-through">
                   ₹{productData?.data?.data?.discount}
@@ -399,13 +419,13 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
               )}
             </div>
             {/* <p className="text-black">{productData?.data?.data?.description}</p> */}
-            <div dangerouslySetInnerHTML={{ __html: product?.description?.slice(0, 400) }} className="quill-content text-gray-600 py-2" />
+            <div dangerouslySetInnerHTML={{ __html: product?.description?.slice(0, 400) }} className="quill-content capitalize text-gray-600 py-2" />
 
 
             {/* Variant Selector for Colors */}
             <div className="space-y-4">
               {productData?.data?.data?.variants?.length > 0 &&
-                <h3 className="text-lg font-semibold text-black">Select Variants</h3>
+                <h3 className="text-lg font-bold text-black">Select Variants</h3>
               }
               {/* <VariantSelector
                 variants={productData?.data?.data?.variants}
