@@ -338,6 +338,26 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
     return colorMatch ? colorMatch.join('/').toUpperCase() : variant?.id;
   };
 
+  const selectedDiscount = (() => {
+    // 1️⃣ Size-level discount
+    if (selectedSize?.product_size_discount) {
+      return Number(selectedSize?.product_size_discount);
+    }
+
+    // 2️⃣ Variant-level discount
+    if (selectedVariant?.product_variant_discount) {
+      return Number(selectedVariant?.product_variant_discount);
+    }
+
+    // 3️⃣ Product-level discount
+    if (productData?.data?.data?.discount) {
+      return Number(productData?.data?.data?.discount);
+    }
+
+    return 0;
+  })();
+
+
   return (
     <>
       <div className="max-w-7xl  px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover bg-center text-black">
@@ -412,11 +432,17 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                 ₹{selectedPrice}
               </span>
 
-              {productData?.data?.data?.discount && (
+              {/* {productData?.data?.data?.discount && (
                 <span className="text-lg text-gray-500 line-through">
                   ₹{productData?.data?.data?.discount}
                 </span>
+              )} */}
+              {selectedDiscount > 0 && (
+                <span className="text-lg text-gray-500 line-through">
+                  ₹{selectedDiscount}
+                </span>
               )}
+
             </div>
             {/* <p className="text-black">{productData?.data?.data?.description}</p> */}
             <div dangerouslySetInnerHTML={{ __html: product?.description?.slice(0, 400) }} className="quill-content capitalize text-gray-600 py-2" />
