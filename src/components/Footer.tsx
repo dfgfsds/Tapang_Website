@@ -193,7 +193,7 @@ export function Footer() {
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
                   <Phone className="h-5 w-5" />
-                  <span>9940270123</span>
+                  <span>9591662899</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail className="h-5 w-5" />
