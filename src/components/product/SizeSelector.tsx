@@ -12,7 +12,7 @@ export function SizeSelector({ sizes, selectedSizeId, onSelect }: SizeSelectorPr
       )}
 
       <div className="flex flex-wrap gap-2">
-        {sizes?.map((size) => {
+        {sizes?.filter((item: any) => item?.product_size_status === true)?.map((size) => {
           const isOutOfStock = Number(size?.product_size_stock_quantity) === 0;
 
           return (
@@ -21,10 +21,9 @@ export function SizeSelector({ sizes, selectedSizeId, onSelect }: SizeSelectorPr
               onClick={() => onSelect(size)}
               // disabled={isOutOfStock}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-all
-                ${
-                  selectedSizeId?.id === size?.id
-                    ? "bg-gray-900 text-white"
-                    : isOutOfStock
+                ${selectedSizeId?.id === size?.id
+                  ? "bg-gray-900 text-white"
+                  : isOutOfStock
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
                 }`}

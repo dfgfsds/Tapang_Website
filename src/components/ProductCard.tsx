@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { useLoadingState } from '../hooks/useLoadingState';
 import LoginModal from './dialogs/LoginModal';
-import { deleteCartitemsApi, postCartitemApi, updateCartitemsApi } from '../api-endpoints/CartsApi';
+import { deleteCartitemsApi, getCartitemsApi, postCartitemApi, updateCartitemsApi } from '../api-endpoints/CartsApi';
 import { Cart } from './Cart';
-import { InvalidateQueryFilters, useQueryClient } from '@tanstack/react-query';
+import { InvalidateQueryFilters, useQuery, useQueryClient } from '@tanstack/react-query';
 import { logEvent } from 'firebase/analytics';
 import { analytics } from './firebase-Analytics/firebaseAnalytics';
 
@@ -29,12 +29,16 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
   const [isCartOpen, setIsCartOpen] = React.useState(false);
   const queryClient = useQueryClient();
 
-  const cartItem = cartItems.find(item =>
-    item.id === product?.id &&
-    item.variantId === selectedVariant.id &&
-    item.sizeId === selectedSize.id
-  );
+  const getCartitemsData = useQuery({
+    queryKey: ['getCartitemsData', getCartId],
+    queryFn: () => getCartitemsApi(`/${getCartId}`),
+    enabled: !!getCartId,
+  });
 
+  const cartItem = getCartitemsData?.data?.data?.find((item: any) =>
+    item?.product === product?.id
+  );
+  console.log(getCartitemsData?.data?.data)
   const { isLoading: isAddLoading, withLoading } = useLoadingState();
 
 
@@ -92,6 +96,15 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
 
   const plainText = selectedVariant?.description?.replace(/<[^>]+>/g, "") || "";
 
+  const hasVariants =
+    product?.variants?.length > 0;
+
+  const hasSizes =
+    product?.variants?.some(
+      (v: any) => v?.sizes && v.sizes.length > 0
+    );
+
+
   return (
     <>
       <div
@@ -119,7 +132,7 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
         </div>
 
         <div className="p-4 flex flex-col flex-1">
-          <h2 className="text-sm sm:text-base font-semibold text-gray-800 line-clamp-1">
+          <h2 className="text-sm sm:text-base capitalize  font-bold text-gray-800 line-clamp-1">
             {product?.name}
           </h2>
           <h2 className="text-sm sm:text-base font-semibold text-gray-600 line-clamp-1">
@@ -144,30 +157,6 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
             </div>
 
             {cartItem ? (
-              // <div
-              //   className="flex items-center gap-2 mt-2"
-              //   onClick={(e) => e.stopPropagation()} // 🛑 Prevents navigation
-              // >
-              //   <button
-              //     onClick={() =>
-              //       handleUpdateCart(product?.cartId, 'decrease', product?.cartQty)
-              //     }
-              //     className="p-1 rounded-full hover:bg-gray-200"
-              //     disabled={product?.cartQty <= 1}
-              //   >
-              //     <Minus className="h-4 w-4" />
-              //   </button>
-
-              //   <span>{product?.cartQty}</span>
-
-              //   <button
-              //     onClick={() => handleUpdateCart(product?.cartId, 'increase', '')}
-              //     className="p-1 rounded-full hover:bg-gray-200"
-              //   >
-              //     <Plus className="h-4 w-4" />
-              //   </button>
-              // </div>
-
               <div
                 className="flex items-center mt-2 px-2 py-1 border border-gray-300 shadow-sm rounded-lg bg-white w-max gap-2"
                 onClick={(e) => e.stopPropagation()}
@@ -177,7 +166,7 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
                   onClick={() =>
                     handleUpdateCart(product?.cartId, "decrease", product?.cartQty)
                   }
-                  disabled={product?.cartQty <= 1}
+                  // disabled={product?.cartQty <= 1}
                   className={`h-6 w-6 flex items-center justify-center rounded-md text-gray-700 transition 
       ${product?.cartQty > 1 ? "border-gray-300 hover:bg-gray-100" : "border-gray-200 opacity-40"}
     `}
@@ -200,29 +189,81 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
               </div>
 
             ) : (
+              // <button
+              //   disabled={isAddLoading || selectedVariant?.stock === 0 || selectedVariant?.status === false}
+              //   onClick={(e) => {
+              //     e.stopPropagation();
+              //     if (getUserId) {
+              //       withLoading(() => {
+              //         onAddToCart({
+              //           id: product.id,
+              //           variantId: selectedVariant.id,
+              //           sizeId: selectedSize.id,
+              //           name: product.name,
+              //           variantName: selectedVariant.name,
+              //           sizeName: selectedSize.name,
+              //           price: selectedSize.price,
+              //           image: selectedVariant.image_urls[0],
+              //           quantity: 1,
+              //         });
+              //         handleAddCart(product.id, 1);
+              //         handleAddCartAnalytics(product)
+              //       });
+              //     } else {
+              //       setSignInModal(true);
+              //     }
+              //   }}
+              //   className="bg-blue-600 text-white p-2 rounded-lg flex items-center gap-1 hover:bg-blue-700 transition-colors text-xs sm:text-sm disabled:opacity-50"
+              // >
+              //   {isAddLoading ? (
+              //     <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+              //   ) : (
+              //     <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+              //   )}
+              //   <span className="hidden sm:inline">
+              //     {selectedVariant?.stock === 0 || selectedVariant?.status === false ? 'Out of Stock' : 'Add'}
+              //   </span>
+              // </button>
               <button
                 disabled={isAddLoading || selectedVariant?.stock === 0 || selectedVariant?.status === false}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (getUserId) {
-                    withLoading(() => {
-                      onAddToCart({
-                        id: product.id,
-                        variantId: selectedVariant.id,
-                        sizeId: selectedSize.id,
-                        name: product.name,
-                        variantName: selectedVariant.name,
-                        sizeName: selectedSize.name,
-                        price: selectedSize.price,
-                        image: selectedVariant.image_urls[0],
-                        quantity: 1,
-                      });
-                      handleAddCart(product.id, 1);
-                      handleAddCartAnalytics(product)
-                    });
-                  } else {
+
+                  if (!getUserId) {
                     setSignInModal(true);
+                    return;
                   }
+
+                  const hasVariants =
+                    product?.variants && product.variants.length > 0;
+
+                  const hasSizes =
+                    product?.variants?.some(
+                      (v: any) => v?.sizes && v.sizes.length > 0
+                    );
+
+                  // 🔥 MAIN LOGIC
+                  if (hasVariants || hasSizes) {
+                    // 👉 Variants / Sizes iruku → product page
+                    navigate(`/product/${product.slug_name}`);
+                    return;
+                  }
+
+                  // 👉 Simple product → direct add to cart
+                  withLoading(() => {
+                    // onAddToCart({
+                    //   id: product.id,
+                    //   variantId: null,
+                    //   sizeId: null,
+                    //   name: product.name,
+                    //   price: product.price,
+                    //   image: product.image_urls?.[0],
+                    //   quantity: 1,
+                    // });
+
+                    handleAddCart(product.id, 1);
+                    handleAddCartAnalytics(product);
+                  });
                 }}
                 className="bg-blue-600 text-white p-2 rounded-lg flex items-center gap-1 hover:bg-blue-700 transition-colors text-xs sm:text-sm disabled:opacity-50"
               >
@@ -232,9 +273,12 @@ export function ProductCard({ product, onAddToCart, cartItems, vendorId }: Produ
                   <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                 )}
                 <span className="hidden sm:inline">
-                  {selectedVariant?.stock === 0 || selectedVariant?.status === false ? 'Out of Stock' : 'Add'}
+                  {selectedVariant?.stock === 0 || selectedVariant?.status === false
+                    ? "Out of Stock"
+                    : "Add"}
                 </span>
               </button>
+
             )}
           </div>
         </div>

@@ -107,36 +107,28 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
       item.sizeId === selectedSize?.id
   );
 
-  // Determine if Add to Cart should be disabled
+
   const isAddToCartDisabled = (() => {
-    if (!productData?.data?.data) return true; // product not loaded yet
+    if (!productData?.data?.data) return true;
     if (productData?.data?.data?.variants?.length === 0) {
-      // No variants, only check stock
       return !productData?.data?.data?.stock_quantity || productData?.data?.data?.stock_quantity === 0;
     } else if (selectedVariant) {
-      // Variant selected, check if size required
       if (selectedVariant?.sizes?.length > 0) {
-        return !selectedSize; // disabled if size not selected
+        return !selectedSize;
       }
-      return false; // variant selected, no sizes
+      return false;
     } else {
-      // No variant selected yet
       return true;
     }
   })();
 
   const selectedPrice = (() => {
-    // 1️⃣ Size price highest priority
     if (selectedSize?.product_size_price) {
       return Number(selectedSize.product_size_price);
     }
-
-    // 2️⃣ Variant price
     if (selectedVariant?.product_variant_price) {
       return Number(selectedVariant.product_variant_price);
     }
-
-    // 3️⃣ Product base price
     return Number(productData?.data?.data?.price || 0);
   })();
 
@@ -320,51 +312,131 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
   })();
 
   const getAvailability = () => {
-    if (selectedSize) {
-      if (!selectedSize.product_size_status)
-        return { disabled: true, text: "Size Not Available" };
+    // 🟩 SIZE LEVEL (highest priority)
+    if (selectedSize?.id) {
+      if (!selectedSize.product_size_status) {
+        return {
+          disabled: true,
+          label: "Size Not Available",
+          stock: 0,
+        };
+      }
 
-      if (Number(selectedSize.product_size_stock_quantity) === 0)
-        return { disabled: true, text: "Out of Stock" };
+      const qty = Number(selectedSize.product_size_stock_quantity || 0);
 
-      return {
-        disabled: false,
-        text: `Add to Cart • In Stock (${selectedSize.product_size_stock_quantity})`,
-      };
-    }
-
-    if (selectedVariant) {
-      if (!selectedVariant.product_variant_status)
-        return { disabled: true, text: "Variant Not Available" };
-
-      if (Number(selectedVariant.product_variant_stock_quantity) === 0)
-        return { disabled: true, text: "Out of Stock" };
-
-      if (selectedVariant?.sizes?.length > 0)
-        return { disabled: true, text: "Select Size" };
+      if (qty === 0) {
+        return {
+          disabled: true,
+          label: "Out of Stock",
+          stock: 0,
+        };
+      }
 
       return {
         disabled: false,
-        text: `Add to Cart • In Stock (${selectedVariant.product_variant_stock_quantity})`,
+        label: `In Stock (${qty})`,
+        stock: qty,
       };
     }
 
-    if (!product?.status)
-      return { disabled: true, text: "Not Available" };
+    // 🟦 VARIANT LEVEL
+    if (selectedVariant?.id) {
+      if (!selectedVariant.product_variant_status) {
+        return {
+          disabled: true,
+          label: "Variant Not Available",
+          stock: 0,
+        };
+      }
 
-    if (Number(product?.stock_quantity) === 0)
-      return { disabled: true, text: "Out of Stock" };
+      // If variant has sizes → force size select
+      if (selectedVariant?.sizes?.length > 0) {
+        return {
+          disabled: true,
+          label: "Select Size",
+          stock: 0,
+        };
+      }
 
-    if (product?.variants?.length > 0)
-      return { disabled: true, text: "Select Variant" };
+      const qty = Number(selectedVariant.product_variant_stock_quantity || 0);
+
+      if (qty === 0) {
+        return {
+          disabled: true,
+          label: "Out of Stock",
+          stock: 0,
+        };
+      }
+
+      return {
+        disabled: false,
+        label: `In Stock (${qty})`,
+        stock: qty,
+      };
+    }
+
+    // 🟨 PRODUCT LEVEL
+    if (!product?.status) {
+      return {
+        disabled: true,
+        label: "Not Available",
+        stock: 0,
+      };
+    }
+
+    const qty = Number(product?.stock_quantity || 0);
+
+    if (qty === 0) {
+      return {
+        disabled: true,
+        label: "Out of Stock",
+        stock: 0,
+      };
+    }
+
+    // product has variants → force selection
+    if (product?.variants?.length > 0) {
+      return {
+        disabled: true,
+        label: "Select Variant",
+        stock: 0,
+      };
+    }
 
     return {
       disabled: false,
-      text: `Add to Cart • In Stock (${product?.stock_quantity})`,
+      label: `In Stock (${qty})`,
+      stock: qty,
+    };
+  };
+  const availability = getAvailability();
+
+
+  const getAvailabilityStock = () => {
+    // 🟥 SIZE SELECTED
+    if (selectedSize?.id) {
+      return {
+        stock: Number(selectedSize.product_size_stock_quantity || 0),
+        status: selectedSize.product_size_status,
+      };
+    }
+
+    // 🟧 VARIANT SELECTED (NO SIZE)
+    if (selectedVariant?.id) {
+      return {
+        stock: Number(selectedVariant.product_variant_stock_quantity || 0),
+        status: selectedVariant.product_variant_status,
+      };
+    }
+
+    // 🟩 ONLY PRODUCT
+    return {
+      stock: Number(product?.stock_quantity || 0),
+      status: product?.status,
     };
   };
 
-  const availability = getAvailability();
+  const availabilityStock = getAvailabilityStock();
 
   const getCurrentSelectionKey = () => {
     if (selectedSize?.id) {
@@ -603,6 +675,20 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
 
               )}
             </div> */}
+            <div className="my-2">
+              <p
+                className={`text-sm font-medium
+      ${availabilityStock.status && availabilityStock.stock > 0
+                    ? "text-green-600"
+                    : "text-red-500"}
+    `}
+              >
+                {availabilityStock.status && availabilityStock.stock > 0
+                  ? `In Stock (${availabilityStock.stock})`
+                  : ""}
+              </p>
+            </div>
+
 
             <div className="pt-6 border-t">
               {cartQty > 0 ? (
@@ -648,7 +734,7 @@ export function ProductDetailsPage({ cartItems, onAddToCart, vendorId }: Product
                   }}
                 >
                   <Plus className="h-5 w-5" />
-                  {availability.text}
+                  {availability.disabled ? availability.label : "Add to Cart"}
                 </LoadingButton>
               )}
             </div>
