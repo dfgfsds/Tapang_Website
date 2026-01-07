@@ -41,8 +41,8 @@ export default function MobileMenu() {
         <SheetHeader>
           <SheetTitle className="text-left">
             <span className="text-xl font-bold">
-              <span className="text-[#B69339]">Shany </span>
-              <span className="text-[#B69339]">Fashion</span>
+              <span className="text-blue-700">Shany </span>
+              <span className="text-blue-700">Fashion</span>
             </span>
           </SheetTitle>
         </SheetHeader>
@@ -92,7 +92,7 @@ function MobileLink({
     <Link
       href={href}
       onClick={() => setOpen(false)}
-      className="block py-2 text-lg font-medium hover:text-[#B69339] transition-colors"
+      className="block py-2 text-lg font-medium hover:text-blue-700 transition-colors"
     >
       {children}
     </Link>

@@ -103,7 +103,7 @@ export default function ProfileAccount() {
         </CardContent>
 
         <CardFooter>
-          <Button onClick={handleUpdate} className="ml-auto bg-[#B69339] hover:bg-[#A37F30]">
+          <Button onClick={handleUpdate} className="ml-auto bg-blue-700 hover:bg-blue-500">
             Save Changes
           </Button>
         </CardFooter>

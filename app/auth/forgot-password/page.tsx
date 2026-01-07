@@ -214,7 +214,7 @@ export default function ForgotPasswordPage() {
 
           <button
             type="submit"
-            className="w-full gap-2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#B69339] hover:bg-[#A37F30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B69339]"
+            className="w-full gap-2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
             disabled={emailLoader}
           >
             Send OTP {emailLoader ? (<Loader2 className='animate-spin' />) : ''}
@@ -268,7 +268,7 @@ export default function ForgotPasswordPage() {
             <div className="flex justify-between">
               <button
                 onClick={handleOtpSubmit}
-                className="w-full cursor-pointer bg-[#B69339] text-white py-2 rounded hover:bg-[#A37F30]"
+                className="w-full cursor-pointer bg-blue-700 text-white py-2 rounded hover:bg-blue-500"
                 disabled={optLoader}
               >
                 <div className='flex gap-2 justify-center'>
@@ -330,7 +330,7 @@ export default function ForgotPasswordPage() {
           )}
           <button
             type="submit"
-            className="w-full bg-[#B69339] text-white py-2 rounded-md hover:bg-[#A37F30] disabled:cursor-not-allowed"
+            className="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-500 disabled:cursor-not-allowed"
             disabled={passwordLoader}
           >
             <div className="flex gap-2 justify-center items-center">

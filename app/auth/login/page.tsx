@@ -155,7 +155,7 @@ export default function LoginPage() {
                 setError('');
               }}
               className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${loginType === 'MOBILE'
-                  ? 'bg-[#B69339] text-white shadow'
+                  ? 'bg-blue-700 text-white shadow'
                   : 'text-gray-700 hover:bg-gray-200'
                 }`}
             >
@@ -168,7 +168,7 @@ export default function LoginPage() {
                 setError('');
               }}
               className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${loginType === 'EMAIL'
-                  ? 'bg-[#B69339] text-white shadow'
+                  ? 'bg-blue-700 text-white shadow'
                   : 'text-gray-700 hover:bg-gray-200'
                 }`}
             >
@@ -293,7 +293,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex gap-2 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#B69339] hover:bg-[#A37F30]"
+              className="w-full flex gap-2 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-500"
 
               /*className="w-full flex gap-2 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#291924] hover:bg-[#3A2534]"*/
             >
@@ -319,7 +319,7 @@ export default function LoginPage() {
 
             <p className="text-sm text-center text-gray-500">
               Don’t have an account?{' '}
-              <Link href="/auth/register" className="text-[#B69339] hover:text-[#A37F30] font-medium">Register</Link>
+              <Link href="/auth/register" className="text-blue-700 hover:text-blue-500 font-medium">Register</Link>
             </p>
           </form>
         </div>

@@ -74,7 +74,7 @@ export default function Footer() {
   }, [user?.data?.id]);
 
   return (
-    <footer className="relative bg-[#F8F7F2] border-t border-border overflow-hidden">
+    <footer className="relative bg-green-100 border-t border-border overflow-hidden">
       {!testimonialData?.length && (
         <section className="bg-white py-16 px-6 md:px-12 lg:px-20">
           <div className="max-w-7xl mx-auto text-center">
@@ -90,7 +90,7 @@ export default function Footer() {
                   :
                   router.push('/auth/login');
               }}
-              className="px-6 py-3 bg-[#B69339] text-white font-medium rounded-lg hover:bg-[#A37F30] transition mb-6"
+              className="px-6 py-3 bg-blue-700 text-white font-medium rounded-lg hover:bg-blue-500 transition mb-6"
             >
               Write a Testimonial
             </button>
@@ -154,8 +154,8 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Shop</h4>
             <ul className="space-y-2">
-              <li><Link href="/products" className="text-muted-foreground hover:text-[#A37F30]">All Products</Link></li>
-              <li><Link href="/categories" className="text-muted-foreground hover:text-[#A37F30]">Categories</Link></li>
+              <li><Link href="/products" className="text-muted-foreground hover:text-blue-500">All Products</Link></li>
+              <li><Link href="/categories" className="text-muted-foreground hover:text-blue-500">Categories</Link></li>
               {/* <li><Link href="/bestsellers" className="text-muted-foreground hover:text-[#D9951A]">Best Sellers</Link></li>
               <li><Link href="/new" className="text-muted-foreground hover:text-[#D9951A]">New Arrivals</Link></li> */}
             </ul>
@@ -164,20 +164,20 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">About</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-muted-foreground hover:text-[#A37F30]">Our Story</Link></li>
+              <li><Link href="/about" className="text-muted-foreground hover:text-blue-500">Our Story</Link></li>
               {/* <li><Link href="/sustainability" className="text-muted-foreground hover:text-[#D9951A]">Sustainability</Link></li> */}
-              {/* <li><Link href="/blog" className="text-muted-foreground hover:text-[#A37F30]">Blog</Link></li> */}
-              <li><Link href="/contact" className="text-muted-foreground hover:text-[#A37F30]">Contact Us</Link></li>
+              {/* <li><Link href="/blog" className="text-muted-foreground hover:text-blue-500">Blog</Link></li> */}
+              <li><Link href="/contact" className="text-muted-foreground hover:text-blue-500">Contact Us</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4">Policy Pages</h4>
             <ul className="space-y-2">
-              <li><Link href="/shipping-policy" className="text-muted-foreground hover:text-[#A37F30]">Shipping & Delivery</Link></li>
-              <li><Link href="/cancellation-policy" className="text-muted-foreground hover:text-[#A37F30]">Cancellation & Refund</Link></li>
-              <li><Link href="/terms-conditions" className="text-muted-foreground hover:text-[#A37F30]"> Terms & Conditions</Link></li>
-              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-[#A37F30]">Privacy Policy</Link></li>
+              <li><Link href="/shipping-policy" className="text-muted-foreground hover:text-blue-500">Shipping & Delivery</Link></li>
+              <li><Link href="/cancellation-policy" className="text-muted-foreground hover:text-blue-500">Cancellation & Refund</Link></li>
+              <li><Link href="/terms-conditions" className="text-muted-foreground hover:text-blue-500"> Terms & Conditions</Link></li>
+              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-blue-500">Privacy Policy</Link></li>
               {/* <li><Link href="/shipping-policy" className="text-muted-foreground hover:text-[#d5a773]">Shipping Policy</Link></li> */}
             </ul>
           </div>

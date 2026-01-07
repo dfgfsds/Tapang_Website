@@ -137,13 +137,13 @@ export default function LoginModal({ open, handleClose, vendorId }: any) {
           <div className="inline-flex rounded-full bg-gray-100 p-1 shadow-md">
             <button
               onClick={() => { setLoginType('MOBILE'); setStep('LOGIN'); setError(''); }}
-              className={`px-4 py-1 rounded-full ${loginType === 'MOBILE' ? 'bg-[#B69339] text-white' : 'text-gray-700 hover:bg-gray-200'}`}
+              className={`px-4 py-1 rounded-full ${loginType === 'MOBILE' ? 'bg-blue-700 text-white' : 'text-gray-700 hover:bg-gray-200'}`}
             >
               Mobile Login
             </button>
             <button
               onClick={() => { setLoginType('EMAIL'); setStep('LOGIN'); setError(''); }}
-              className={`px-4 py-1 rounded-full ${loginType === 'EMAIL' ? 'bg-[#B69339] text-white' : 'text-gray-700 hover:bg-gray-200'}`}
+              className={`px-4 py-1 rounded-full ${loginType === 'EMAIL' ? 'bg-blue-700 text-white' : 'text-gray-700 hover:bg-gray-200'}`}
             >
               Email Login
             </button>
@@ -252,7 +252,7 @@ export default function LoginModal({ open, handleClose, vendorId }: any) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center gap-2 py-2 px-4 rounded-md text-white bg-[#B69339] hover:bg-[#A37F30]"
+            className="w-full flex justify-center gap-2 py-2 px-4 rounded-md text-white bg-blue-700 hover:bg-blue-500"
           >
             {loginType === 'EMAIL'
               ? 'Login'
@@ -273,7 +273,7 @@ export default function LoginModal({ open, handleClose, vendorId }: any) {
 
           <p className="text-sm text-center text-gray-600">
             Don't have an account?{' '}
-            <Link href="/auth/register" className="font-medium text-[#B69339] hover:text-[#A37F30]">
+            <Link href="/auth/register" className="font-medium text-blue-700 hover:text-blue-500">
               Create one
             </Link>
           </p>

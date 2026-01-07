@@ -11,7 +11,7 @@ export default function ProfilePage() {
   const tabParam = searchParams.get('tab');
   const defaultTab = tabParam === 'addresses' || tabParam === 'account' ? tabParam : 'orders';
   return (
-    <div className="bg-[#F8F7F2] min-h-screen">
+    <div className="bg-blue-50 min-h-screen">
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold mb-8">My Account</h1>
         
@@ -22,19 +22,19 @@ export default function ProfilePage() {
                 <TabsList className="h-14 bg-transparent gap-4">
                   <TabsTrigger 
                     value="orders" 
-                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#B69339] data-[state=active]:text-[#B69339] rounded-none px-1"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 rounded-none px-1"
                   >
                     Order History
                   </TabsTrigger>
                   <TabsTrigger 
                     value="addresses" 
-                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#B69339] data-[state=active]:text-[#B69339] rounded-none px-1"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 rounded-none px-1"
                   >
                     Addresses
                   </TabsTrigger>
                   <TabsTrigger 
                     value="account" 
-                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#B69339] data-[state=active]:text-[#B69339] rounded-none px-1"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 rounded-none px-1"
                   >
                     Account Info
                   </TabsTrigger>

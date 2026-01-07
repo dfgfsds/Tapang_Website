@@ -74,8 +74,8 @@ export default function Header() {
                       className={`
                   text-sm font-medium transition-colors
                   ${isActive
-                          ? 'text-[#B69339] font-semibold'
-                          : 'text-gray-700 hover:text-[#A37F30]'
+                          ? 'text-blue-700 font-semibold'
+                          : 'text-gray-700 hover:text-blue-500'
                         }
                 `}
                     >
@@ -94,7 +94,7 @@ export default function Header() {
                 <Button variant="ghost" size="icon" className="relative">
                   <ShoppingBag className="h-5 w-5" />
                   {cartItem?.data?.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-[#B69339] text-white text-xs h-5 w-5 rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 bg-blue-700 text-white text-xs h-5 w-5 rounded-full flex items-center justify-center">
                       {cartItem.data.length}
                     </span>
                   )}
@@ -107,8 +107,8 @@ export default function Header() {
                 className={`
              sm:flex items-center gap-2 text-sm font-medium
             ${pathname === '/profile'
-                    ? 'text-[#B69339] font-semibold'
-                    : 'text-gray-700 hover:text-[#A37F30]'
+                    ? 'text-blue-700 font-semibold'
+                    : 'text-gray-700 hover:text-blue-500'
                   }
           `}
               >
@@ -131,8 +131,8 @@ export default function Header() {
                   className="
               hidden lg:flex
               items-center gap-1
-              text-[#B69339]
-              hover:bg-[#B69339] hover:text-white
+              text-blue-700
+              hover:bg-blue-700 hover:text-white
               transition-all duration-200
             "
                 >
