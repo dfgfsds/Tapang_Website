@@ -93,10 +93,10 @@ const steps = [
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="absolute -bottom-6 -right-6 bg-[#B69339] text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold z-10">
+                  <div className="absolute -bottom-6 -right-6 bg-blue-700 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold z-10">
                     {step.id}
                   </div>
-                  <div className="absolute -top-4 -left-4 w-full h-full border-2 border-[#B69339] rounded-xl z-0"></div>
+                  <div className="absolute -top-4 -left-4 w-full h-full border-2 border-blue-700 rounded-xl z-0"></div>
                 </div>
               </div>
 

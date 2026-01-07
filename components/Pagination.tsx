@@ -53,7 +53,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
                         <button
                             key={`page-${page}`}
                             onClick={() => onPageChange(Number(page))}
-                            className={`px-3 py-1 border-2 rounded cursor-pointer border-[#A37F30] ${page === currentPage ? 'bg-[#B69339] hover:bg-[#A37F30] text-white' : ''}`}
+                            className={`px-3 py-1 border-2 rounded cursor-pointer border-blue-500 ${page === currentPage ? 'bg-blue-700 hover:bg-blue-500 text-white' : ''}`}
                         >
                             {page}
                         </button>

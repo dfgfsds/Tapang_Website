@@ -29,7 +29,7 @@ export default function BestSellers() {
   });
 
   return (
-    <section className="py-20 bg-[#F3E8C8]">
+    <section className="py-20 bg-blue-50">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <div>
@@ -39,7 +39,7 @@ export default function BestSellers() {
             </p>
           </div>
 
-          <Button asChild variant="outline" className="mt-4 md:mt-0 border-red-600 text-red-600 hover:bg-red-600 hover:text-white">
+          <Button asChild variant="outline" className="mt-4 md:mt-0 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
             <Link href="/products">
               View All
             </Link>

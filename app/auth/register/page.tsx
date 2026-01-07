@@ -157,14 +157,14 @@ export default function CreateAccountPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex gap-2 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#B69339] hover:bg-[#A37F30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B69339]"
+              className="w-full flex gap-2 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
             >
               Create Account {loading && <Loader className='animate-spin' />}
             </button>
 
             <p className="text-sm text-gray-600 text-center">
               Already have an account?{' '}
-              <Link href="/auth/login" className="font-medium text-[#B69339] hover:text-[#A37F30]">
+              <Link href="/auth/login" className="font-medium text-blue-700 hover:text-blue-500">
                 Sign in
               </Link>
             </p>

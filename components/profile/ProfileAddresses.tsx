@@ -66,7 +66,7 @@ console.log(editData,'editdata');
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Your Addresses</h2>
 
-        <Button className="bg-[#B69339] hover:bg-[#A37F30]"
+        <Button className="bg-blue-700 hover:bg-blue-500"
           onClick={() => { setOpenMoadl(!openModal) }}
         >
           <Plus className="mr-2 h-4 w-4" />
@@ -79,7 +79,7 @@ console.log(editData,'editdata');
           <Card key={address.id} className="relative">
             {address?.selected_address && (
               <div className="absolute top-2 right-2">
-                <span className="bg-red-400/10 text-[#B69339] text-xs font-medium px-2.5 py-0.5 rounded">
+                <span className="bg-red-400/10 text-blue-700 text-xs font-medium px-2.5 py-0.5 rounded">
                   Default
                 </span>
               </div>

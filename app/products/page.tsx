@@ -79,7 +79,7 @@ export default function ProductsPage() {
   });
 
   return (
-    <div className="bg-[#F3E8C8]">
+    <div className="bg-blue-100">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">All Products</h1>

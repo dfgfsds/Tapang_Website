@@ -136,20 +136,46 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
     return "Add to Cart";
   };
 
+  const getCurrentStockInfo = () => {
+    if (selectedSize) {
+      return {
+        qty: selectedSize.product_size_stock_quantity,
+        status: selectedSize.product_size_status,
+        source: "size",
+      };
+    }
+    if (selectedVariant) {
+      return {
+        qty: selectedVariant.product_variant_stock_quantity,
+        status: selectedVariant.product_variant_status,
+        source: "variant",
+      };
+    }
+    if (!product?.variants?.length) {
+      return {
+        qty: product.stock_quantity,
+        status: product.status,
+        source: "product",
+      };
+    }
+    return null;
+  };
+
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2 text-[#B69339] uppercase">{product?.name}</h1>
+        <h1 className="text-3xl font-bold mb-2 text-blue-700 uppercase">{product?.name}</h1>
 
         <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground !text-red-600">
+          <span className="text-sm text-muted-foreground !text-blue-600">
             {product?.brand_name}
           </span>
         </div>
       </div>
       <div className='flex gap-5'>
-        {/* <div className="text-2xl font-bold text-[#B69339]">{formatPrice(product?.price)}</div> */}
-        <div className="text-2xl font-bold text-red-600">
+        {/* <div className="text-2xl font-bold text-blue-700">{formatPrice(product?.price)}</div> */}
+        <div className="text-2xl font-bold text-blue-600">
           {formatPrice(getDisplayPrice())}
         </div>
         {product?.price === product?.discount || product?.discount === 0 || product?.discount === '' ?
@@ -165,6 +191,20 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
 
       {/* <p className="text-muted-foreground">{product?.description}</p> */}
       <div dangerouslySetInnerHTML={{ __html: product?.description }} className="quill-content" />
+
+      {!product?.variants?.length && (
+        <div className="mt-3">
+          {product?.status === false ? (
+            <p className="text-sm font-semibold text-red-600">Not Available</p>
+          ) : product?.stock_quantity === 0 ? (
+            <p className="text-sm font-semibold text-red-600">Out of Stock</p>
+          ) : (
+            <p className="text-sm font-semibold text-green-600">
+              In Stock ({product?.stock_quantity})
+            </p>
+          )}
+        </div>
+      )}
 
       {product?.variants?.length > 0 && (
         <div className="mt-6">
@@ -195,7 +235,7 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
               transition-all
               duration-200
               ${active
-                        ? "border-red-500 bg-red-50 shadow-sm"
+                        ? "border-blue-500 bg-blue-50 shadow-sm"
                         : "border-gray-200 bg-white hover:border-gray-400 hover:shadow-sm"
                       }
             `}
@@ -209,7 +249,7 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
                     </div>
 
                     <p
-                      className={`text-base font-bold capitalize truncate ${active ? "text-red-600" : "text-gray-700"
+                      className={`text-base font-bold capitalize truncate ${active ? "text-blue-600" : "text-gray-700"
                         }`}
                     >
                       {variant?.product_variant_title}
@@ -218,6 +258,23 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
                 );
               })}
           </div>
+        </div>
+      )}
+      {selectedVariant && !selectedSize && (
+        <div className="mt-3">
+          {selectedVariant?.product_variant_status === false ? (
+            <p className="text-sm font-semibold text-red-600">
+              Variant Not Available
+            </p>
+          ) : selectedVariant?.product_variant_stock_quantity === 0 ? (
+            <p className="text-sm font-semibold text-red-600">
+              Out of Stock
+            </p>
+          ) : (
+            <p className="text-sm font-semibold text-green-600">
+              In Stock ({selectedVariant?.product_variant_stock_quantity})
+            </p>
+          )}
         </div>
       )}
       {selectedVariant?.sizes?.length > 0 && (
@@ -246,8 +303,8 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
               transition-all
               duration-200
               ${active
-                        ? "bg-red-500 text-white border-red-500 shadow"
-                        : "bg-white text-gray-800 border-gray-300 hover:border-red-400 hover:text-red-600"
+                        ? "bg-blue-500 text-white border-blue-500 shadow"
+                        : "bg-white text-gray-800 border-gray-300 hover:border-blue-400 hover:text-blue-600"
                       }
             `}
                   >
@@ -256,6 +313,24 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
                 );
               })}
           </div>
+        </div>
+      )}
+
+      {selectedSize && (
+        <div className="mt-3">
+          {selectedSize?.product_size_status === false ? (
+            <p className="text-sm font-semibold text-red-600">
+              Size Not Available
+            </p>
+          ) : selectedSize?.product_size_stock_quantity === 0 ? (
+            <p className="text-sm font-semibold text-red-600">
+              Out of Stock
+            </p>
+          ) : (
+            <p className="text-sm font-semibold text-green-600">
+              In Stock ({selectedSize?.product_size_stock_quantity})
+            </p>
+          )}
         </div>
       )}
 
@@ -305,7 +380,7 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
     duration-300
     ${isButtonDisabled
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-red-500 hover:bg-red-600 text-white shadow-md"
+              : "bg-blue-500 hover:bg-blue-600 text-white shadow-md"
             }
   `}
           onClick={(e) => {

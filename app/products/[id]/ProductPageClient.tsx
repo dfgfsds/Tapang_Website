@@ -64,7 +64,7 @@ console.log(products)
   return (
     <>
 
-        <div className="bg-[#F3E8C8]">
+        <div className="bg-blue-50">
         <div className="container mx-auto px-4 py-8">
           <div className="flex mt-auto  !cursor-pointer mb-3"
             onClick={() => router.back()}

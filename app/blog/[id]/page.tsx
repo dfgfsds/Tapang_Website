@@ -72,7 +72,7 @@ export default function BlogPost({ params }: { params: { id: string } }) {
           <Button
             asChild
             variant="ghost"
-            className="mb-8 hover:bg-transparent hover:text-[#A37F30]"
+            className="mb-8 hover:bg-transparent hover:text-blue-500"
           >
             <Link href="/blog">
               <ArrowLeft className="mr-2 h-4 w-4" />

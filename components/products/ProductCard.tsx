@@ -2,10 +2,8 @@
 
 import Link from 'next/link';
 import { Minus, Plus, ShoppingBag, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import type { Product } from '@/lib/data';
 import { useEffect, useState } from 'react';
 import { deleteCartitemsApi, postCartitemApi, updateCartitemsApi } from '@/api-endpoints/CartsApi';
 import { InvalidateQueryFilters, useQueryClient } from '@tanstack/react-query';
@@ -132,15 +130,15 @@ export default function ProductCard({ product }: { product: any }) {
         </div>
       )}
 
-      <div className="p-4 bg-[#E6CF96]">
+      <div className="p-4 bg-white">
         <Link href={`/products/${product?.slug_name}`}>
-          <h3 className="font-bold text-lg mb-1 capitalize transition-colors text-black group-hover:text-black/50">
+          <h3 className="font-bold text-lg mb-1 capitalize transition-colors text-blue-600 group-hover:text-blue-800">
             {product?.name?.slice(0, 20)}
           </h3>
         </Link>
 
         <div className='flex gap-2'>
-          <span className="text-black font-medium">{formatPrice(product?.price)}</span>
+          <span className="text-blue-600 font-medium">{formatPrice(product?.price)}</span>
           {product?.price === product?.discount || product?.discount === 0 || product?.discount === '' ?
             ('') : (
               <>
@@ -166,7 +164,7 @@ export default function ProductCard({ product }: { product: any }) {
                 <Minus className="h-4 w-4" />
               </button>
 
-              <span className='border-2 px-10 border-black text-black'>{product?.cartQty}</span>
+              <span className='border-2 px-10 border-white text-white'>{product?.cartQty}</span>
 
               <button
                 onClick={() => handleUpdateCart(product?.cartId, 'increase', '')}
@@ -176,12 +174,12 @@ export default function ProductCard({ product }: { product: any }) {
               </button>
             </div>
           ) : (
-            <button className="cursor-pointer relative px-4 py-1.5 bg-[#B69339] hover:bg-[#A37F30] text-white group-hover:text-[#fff] font-semibold rounded-xl overflow-hidden group"
+            <button className="cursor-pointer relative px-4 py-1.5 bg-blue-700 text-white hover:bg-blue-800 group-hover:text-[#fff] font-semibold rounded-xl overflow-hidden group"
               disabled={product?.stock_quantity === 0 || product?.status === false}
               onClick={(e) => {
                 e.stopPropagation();
                 if (getUserId) {
-                     router.push(`/products/${product?.slug_name}`);
+                  router.push(`/products/${product?.slug_name}`);
                   // handleAddCart(product.id, 1);
                   //   handleAddCartAnalytics(product)
                   // });
@@ -190,7 +188,7 @@ export default function ProductCard({ product }: { product: any }) {
                 }
               }}
             >
-              <span className="relative z-10">
+              <span className="relative z-10 text-white">
                 {product?.stock_quantity === 0 || product?.status === false ? 'Out of Stock' : 'Buy Now'}
               </span>
               <span className="absolute inset-0 w-1/3 bg-gradient-to-l from-white to-transparent opacity-40 transform skew-x-[-40deg] shine-animation"></span>

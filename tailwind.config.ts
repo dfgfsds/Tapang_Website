@@ -13,7 +13,7 @@ const config: Config = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'catBgImage': "url('/img/old-cat-bg.png')",
+        'catBgImage': "url('/img/cat-bg.jpeg')",
         'proBgImage': "url('/img/proSecImg.jpeg')",
         'secBgImage': "url('/img/secBg.jpeg')",
         'cusBgImage': "url('/img/96.png')"

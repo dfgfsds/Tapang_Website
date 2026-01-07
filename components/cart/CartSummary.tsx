@@ -260,13 +260,13 @@ export default function CartSummary({ totalAmount, triggerKey }: any) {
     if (getCartId) {
       fetchCartAndDeliveryCharge();
     }
-  }, [getCartId, userId, vendorId, user?.data?.contact_number, paymentValue, totalAmount]);
+  }, [getCartId, userId, vendorId, user?.data?.contact_number, paymentValue, totalAmount, triggerKey]);
 
-  useEffect(() => {
-    if (getCartId) {
-      fetchCartAndDeliveryCharge();
-    }
-  }, [triggerKey, getCartId, userId, vendorId, user?.data?.contact_number, fetchCartAndDeliveryCharge]);
+  // useEffect(() => {
+  //   if (getCartId) {
+  //     fetchCartAndDeliveryCharge();
+  //   }
+  // }, [triggerKey, getCartId, userId, vendorId, user?.data?.contact_number]);
 
   const handleSelectAddress = async (id: any) => {
     try {
@@ -414,7 +414,7 @@ export default function CartSummary({ totalAmount, triggerKey }: any) {
         <div className="text-center p-4 bg-gray-50 rounded-lg mb-3">
           <MapPin className="mx-auto h-8 w-8 text-gray-400" />
           <p className="mt-2 text-sm text-gray-600">No delivery address found</p>
-          <p className="mt-2 inline-block text-sm text-[#B69339] hover:text-[#A37F30] cursor-pointer"
+          <p className="mt-2 inline-block text-sm text-blue-700 hover:text-blue-500 cursor-pointer"
             onClick={() => {
               router.push('/profile?tab=addresses')
             }
@@ -579,7 +579,7 @@ export default function CartSummary({ totalAmount, triggerKey }: any) {
                 />
                 <Button
                   disabled={!code || isChecking}
-                  onClick={handleSubmit}
+                  onClick={() => handleSubmit(event as any)}
                   variant="outline"
                   className="whitespace-nowrap"
                 >
@@ -644,7 +644,7 @@ export default function CartSummary({ totalAmount, triggerKey }: any) {
           </div>
 
           {!data?.data?.length ? (
-            <Button className="w-full bg-[#B69339] hover:bg-[#A37F30]"
+            <Button className="w-full bg-blue-700 hover:bg-blue-500"
               onClick={() => {
                 router.push('/profile?tab=addresses')
               }}
@@ -653,7 +653,7 @@ export default function CartSummary({ totalAmount, triggerKey }: any) {
             </Button>
           ) : (
             <>
-              <Button className="w-full bg-[#B69339] hover:bg-[#A37F30]"
+              <Button className="w-full bg-blue-700 hover:bg-blue-500"
                 onClick={handleCheckout}
                 // disabled={!selectedAddressId || loading || !dtdcSelectValue || !paymentValue}
                 disabled={!selectedAddressId || loading || !getPaymentDeliveryPartnerData?.data?.data[0]?.delivery_partner}
