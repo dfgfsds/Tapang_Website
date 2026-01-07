@@ -125,7 +125,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-blue-50">
       {/* Hero Section */}
       <div className="relative h-[40vh] min-h-[300px] w-full overflow-hidden">
         <div
@@ -197,7 +197,7 @@ export default function ContactPage() {
                 />
               </div>
               {successMsg && <p className="text-green-600 text-sm">{successMsg}</p>}
-              <Button disabled={loading} type="submit" className="w-full bg-[#B69339] hover:bg-[#A37F30]">
+              <Button disabled={loading} type="submit" className="w-full bg-blue-700 hover:bg-blue-500">
                 {loading ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
@@ -213,7 +213,7 @@ export default function ContactPage() {
 
             <div className="space-y-6">
               <div className="flex items-start">
-                <MapPin className="h-6 w-6 text-[#B69339] mr-4" />
+                <MapPin className="h-6 w-6 text-blue-700 mr-4" />
                 <div>
                   <h3 className="font-semibold mb-1">Visit Us</h3>
                   <p className="text-muted-foreground">
@@ -224,7 +224,7 @@ export default function ContactPage() {
 
               {VendorDetails?.vendor_other_details?.support_contact && (
                 <div className="flex items-start">
-                  <Phone className="h-6 w-6 text-[#B69339] mr-4" />
+                  <Phone className="h-6 w-6 text-blue-700 mr-4" />
                   <div>
                     <h3 className="font-semibold mb-1">Call Us</h3>
                     <p className="text-muted-foreground">
@@ -235,7 +235,7 @@ export default function ContactPage() {
               )}
 
               <div className="flex items-start">
-                <Mail className="h-6 w-6 text-[#B69339] mr-4" />
+                <Mail className="h-6 w-6 text-blue-700 mr-4" />
                 <div>
                   <h3 className="font-semibold mb-1">Email Us</h3>
                   <p className="text-muted-foreground">

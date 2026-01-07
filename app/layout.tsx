@@ -18,7 +18,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: 'Shany Fashion',
+  title: 'Tapang Thalaivare',
   description: '',
 };
 

@@ -66,14 +66,19 @@ export default function CartPage() {
     };
   });
 
-  const totalAmount = matchingProductsArray?.reduce((acc: number, item: any) => {
-    const price =
-      item.price ??
-      item?.product_variant_price ??
-      item?.product_size_price ??
-      0;
-    return acc + price * (item.cartQty || 1);
-  }, 0);
+  // const totalAmount = matchingProductsArray?.reduce((acc: number, item: any) => {
+  //   const price =
+  //     item.price ??
+  //     item?.product_variant_price ??
+  //     item?.product_size_price ??
+  //     0;
+  //   return acc + price * (item.cartQty || 1);
+  // }, 0);
+
+    const totalAmount = getCartItemsProductSizesWithVariantsData?.data?.data?.cart_items?.filter?.((item: any) => item?.product_details?.status === true && item?.product_details?.quantity !== 0)?.reduce((acc: number, item: any) => {
+    const price = item?.product_details?.price
+    return acc + price * (item?.quantity || 1);
+  }, 0)
 
   return (
     <div className="bg-white">
@@ -92,7 +97,7 @@ export default function CartPage() {
 
           <div className="flex flex-col items-center justify-center h-max  text-gray-800 animate-fadeIn">
             <div className="text-6xl text-gray-400 animate-float">
-              <ShoppingBag className="h-16 w-16 text-[#B69339] mb-4" />
+              <ShoppingBag className="h-16 w-16 text-blue-700 mb-4" />
             </div>
             <h1 className="text-3xl font-bold mt-0 animate-slideInUp">
               Your cart is empty.
@@ -103,7 +108,7 @@ export default function CartPage() {
             </p>
 
             <button
-              className="mt-8 px-6 py-3 bg-[#B69339] text-white rounded-full shadow-md hover:bg-[#A37F30] transform transition hover:scale-105 animate-bounce"
+              className="mt-8 px-6 py-3 bg-blue-700 text-white rounded-full shadow-md hover:bg-blue-500 transform transition hover:scale-105 animate-bounce"
               onClick={() => router.push('/products')}
             >
               Return To Shop
@@ -112,11 +117,11 @@ export default function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="bg-[#F8F7F2] rounded-xl overflow-hidden">
+              <div className="bg-blue-50 rounded-xl overflow-hidden">
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold">Cart Items {cartItem?.length}</h2>
-                    <Link href="/products" className="text-[#B69339] hover:underline text-sm flex items-center">
+                    <Link href="/products" className="text-blue-700 hover:underline text-sm flex items-center">
                       Continue Shopping
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </Link>

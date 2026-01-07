@@ -78,7 +78,7 @@ export default function ProductGallery({ product }: { product: any }) {
           <button
             key={index}
             className={`aspect-square rounded-lg overflow-hidden border-2 ${activeIndex === index
-                ? 'border-[#B69339]'
+                ? 'border-blue-700'
                 : 'border-transparent'
               }`}
             onClick={() => setActiveIndex(index)}

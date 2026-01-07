@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AboutPage() {
   return (
-    <div className="w-full bg-white flex justify-center pt-10 pb-16 md:pt-14 md:pb-20 px-4 md:px-10 lg:px-16">
+    <div className="w-full bg-blue-50 flex justify-center pt-10 pb-16 md:pt-14 md:pb-20 px-4 md:px-10 lg:px-16">
       <div className="max-w-5xl text-black leading-relaxed">
 
         {/* TITLE */}

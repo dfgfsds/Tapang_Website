@@ -61,7 +61,7 @@ export default function BlogPage() {
 
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="text-sm font-medium text-[#B69339]">
+                  <span className="text-sm font-medium text-blue-700">
                     {post?.title}
 
                   </span>
@@ -71,7 +71,7 @@ export default function BlogPage() {
                   </span>
                 </div>
 
-                <h2 className="text-xl font-semibold mb-2 group-hover:text-[#B69339] transition-colors">
+                <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-700 transition-colors">
                   {post?.subtitle}
 
                 </h2>
