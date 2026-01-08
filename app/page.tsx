@@ -8,7 +8,7 @@ import VideoSection from '@/components/home/VideoSection/VideoSection';
 
 export default function Home() {
   return (
-    <div className="flex flex-col w-full mt-3">
+    <div className="flex flex-col w-full mt-0">
       <HeroSection />
       <FeaturedCategories />
       <BestSellers />
@@ -16,7 +16,7 @@ export default function Home() {
       <OurProcess />
       <CustomerReviews />
       {/* <Newsletter /> */}
-    
+
     </div>
   );
 }

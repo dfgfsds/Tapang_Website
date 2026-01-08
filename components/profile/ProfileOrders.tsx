@@ -33,7 +33,6 @@ export default function ProfileOrders() {
     enabled: !!userId && !!vendorId
   });
 
-  console.log('getOrdersAndOrdersItemsApiData', getOrdersAndOrdersItemsApiData?.data?.data);
   
   
   // For demo purposes, we'll create mock orders using products
@@ -100,14 +99,14 @@ export default function ProfileOrders() {
                      <div key={product.id} className="flex items-center gap-4">
                        <div className="w-16 h-16 bg-[#F8F7F2] rounded-md overflow-hidden flex-shrink-0">
                          <img 
-                           src={product.product?.image_urls?.[0] || "https://semantic-ui.com/images/wireframe/image.png"} 
-                           alt={product.name} 
+                           src={product?.product_details?.image_urls?.[0] || "https://semantic-ui.com/images/wireframe/image.png"} 
+                           alt={product?.product_details?.name} 
                            className="w-full h-full object-cover"
                          />
                        </div>
                        
                        <div className="flex-grow">
-                         <h3 className="font-medium">{product?.product?.name}</h3>
+                         <h3 className="font-medium">{product?.product_details?.name}</h3>
                          <p className="text-sm text-muted-foreground">
                            Qty: {product?.quantity}
                          </p>
@@ -115,7 +114,7 @@ export default function ProfileOrders() {
                        
                        <div>
                          <Button variant="outline" size="sm"
-                         onClick={() => router.push(`/products/${product?.product?.id}`)}
+                         onClick={() => router.push(`/products/${product?.product_details?.slug_name}`)}
                          >
                            Buy Again
                          </Button>
