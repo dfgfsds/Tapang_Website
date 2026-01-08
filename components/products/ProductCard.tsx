@@ -164,7 +164,7 @@ export default function ProductCard({ product }: { product: any }) {
                 <Minus className="h-4 w-4" />
               </button>
 
-              <span className='border-2 px-10 border-white text-white'>{product?.cartQty}</span>
+              <span className='border-2 px-10 border-black text-black'>{product?.cartQty}</span>
 
               <button
                 onClick={() => handleUpdateCart(product?.cartId, 'increase', '')}

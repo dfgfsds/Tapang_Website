@@ -46,9 +46,9 @@ export default function SubCategoryPageClient({
         }) || [];
 
     // 4️⃣ Loader UI
-    if (isLoading || !category || !subcategory) {
+    if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-white">
+            <div className="flex items-center justify-center min-h-screen bg-blue-50">
                 <div className="flex flex-col items-center">
                     <svg
                         className="animate-spin h-10 w-10 text-yellow-600 mb-4"
@@ -78,7 +78,7 @@ export default function SubCategoryPageClient({
     }
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-blue-50 min-h-screen">
             <div className="max-w-7xl mx-auto px-4 py-8">
 
                 {/* Back */}
@@ -116,12 +116,12 @@ export default function SubCategoryPageClient({
                                 />
 
                                 <div className="p-4">
-                                    <h3 className="font-semibold text-gray-800 truncate uppercase">
+                                    <h3 className="font-bold text-blue-500 truncate uppercase">
                                         {p.name}
                                     </h3>
 
                                     <div className="mt-2 flex items-center gap-2">
-                                        <span className="text-yellow-600 font-bold">
+                                        <span className="text-blue-500 font-bold">
                                             {formatPrice(p.price)}
                                         </span>
 
