@@ -157,32 +157,33 @@ import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import emptyBox from "../../../public/img/empty-box.png";
+import Link from "next/link";
 
 
 export default function CategoryPageClient({ id }: { id: string }) {
   const { categories, isLoading }: any = useCategories();
   const { products }: any = useProducts();
   const router = useRouter();
-const emptyImage ='https://syria.adra.cloud/wp-content/plugins/elementor/assets/images/placeholder.png'
-  const category = categories?.data?.find(
+  const emptyImage = 'https://syria.adra.cloud/wp-content/plugins/elementor/assets/images/placeholder.png'
+  const sub = categories?.data?.find(
     (item: any) => String(item?.slug_name) === String(id)
   );
 
-  const subcategories = category?.subcategories || [];
+  const subcategories = sub?.subcategories || [];
 
   const filteredProducts =
     products?.data?.filter((p: any) => {
       const cat = p.category;
 
-      if (typeof cat === "number") return cat === Number(category?.id);
-      if (typeof cat === "string") return cat === category?.slug_name;
-      if (typeof cat === "object") return Number(cat?.id) === Number(category?.id);
+      if (typeof cat === "number") return cat === Number(sub?.id);
+      if (typeof cat === "string") return cat === sub?.slug_name;
+      if (typeof cat === "object") return Number(cat?.id) === Number(sub?.id);
 
       return false;
     }) || [];
-console.log(subcategories , "filteredProducts")
+  console.log(subcategories, "filteredProducts")
 
-  if (isLoading || !category) {
+  if (isLoading || !sub) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="flex flex-col items-center">
@@ -217,7 +218,7 @@ console.log(subcategories , "filteredProducts")
 
 
   return (
-    <div className="bg-[#F3E8C8] min-h-screen">
+    <div className="bg-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Back */}
@@ -231,7 +232,7 @@ console.log(subcategories , "filteredProducts")
 
         {/* Category Name */}
         <h1 className="text-3xl font-bold text-gray-900 text-center mb-10 capitalize">
-          {category?.name} {subcategories.length > 0 ? '' : 'Products'}
+          {sub?.name} {subcategories.length > 0 ? '' : 'Products'}
         </h1>
 
         {/* ⭐ SHOW SUBCATEGORIES ONLY IF THEY EXIST */}
@@ -241,27 +242,56 @@ console.log(subcategories , "filteredProducts")
               Subcategories
             </h2> */}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {subcategories.map((sub: any) => (
-                <div
-                  key={sub.id}
-                  className="bg-[#E6CF96] shadow-sm rounded-lg overflow-hidden font-semibold cursor-pointer hover:shadow-md transition"
-                  onClick={() =>
-                    router.push(`/categories/${category.slug_name}/${sub.slug_name}`)
-                  }
-                >
-                  <img
-                    src={sub?.image_url ? sub?.image_url : emptyImage}
-                    alt={sub?.name}
-                    className="w-full h-36 object-cover"
-                  />
+                // <div
+                //   key={sub.id}
+                //   className="bg-black/20 shadow-sm rounded-lg overflow-hidden font-semibold cursor-pointer hover:shadow-md transition"
+                //   onClick={() =>
+                //     router.push(`/categories/${category.slug_name}/${sub.slug_name}`)
+                //   }
+                // >
+                //   <img
+                //     src={sub?.image_url ? sub?.image_url : emptyImage}
+                //     alt={sub?.name}
+                //     className="w-full h-36 object-cover"
+                //   />
 
-                  <div className="p-3 text-center">
-                    <span className="font-medium text-gray-800 capitalize">
-                      {sub?.name}
-                    </span>
+                //   <div className="p-3 text-center">
+                //     <span className="font-medium text-gray-800 capitalize">
+                //       {sub?.name}
+                //     </span>
+                //   </div>
+                // </div>
+                <Link
+                  href={`/categories/${sub.slug_name}/${sub.slug_name}`}
+                  key={sub.id}
+                  className="group relative overflow-hidden rounded-xl bg-[#F8F7F2] transition-all duration-300 hover:shadow-xl"
+                >
+                  {/* Image */}
+                  <div className="aspect-[16/9] w-full overflow-hidden">
+                    <img
+                      src={sub?.image_url ? sub?.image_url : emptyImage}
+                      alt={sub?.name}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
-                </div>
+
+                  {/* STRONG GRADIENT OVERLAY */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+
+                  {/* TEXT */}
+                  <div className="absolute bottom-0 left-0 w-full p-6">
+                    <h3 className="text-2xl font-bold text-white capitalize drop-shadow-lg">
+                      {sub?.name}
+                    </h3>
+                    {sub?.description && (
+                      <p className="mt-1 text-sm text-white/90 line-clamp-2 drop-shadow">
+                        {sub?.description}
+                      </p>
+                    )}
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -275,7 +305,7 @@ console.log(subcategories , "filteredProducts")
             </h2> */}
 
             <h1 className="text-3xl font-bold text-gray-900 text-center mb-10 capitalize">
-              {category?.name} Products Lists
+              {sub?.name} Products Lists
             </h1>
 
             {filteredProducts.length === 0 ? (
@@ -289,7 +319,7 @@ console.log(subcategories , "filteredProducts")
                   <div
                     key={p.id}
                     onClick={() => router.push(`/products/${p.slug_name}`)}
-                    className="bg-[#E6CF96] border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
+                    className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
                   >
                     <img
                       src={p.image_urls?.[0] ? p.image_urls[0] : emptyImage}
@@ -298,12 +328,12 @@ console.log(subcategories , "filteredProducts")
                     />
 
                     <div className="p-4">
-                      <h3 className="font-semibold text-gray-800 truncate uppercase">
+                      <h3 className="font-bold text-blue-500 truncate uppercase">
                         {p.name}
                       </h3>
 
                       <div className="mt-2 flex items-center gap-2">
-                        <span className="text-black font-bold">
+                        <span className="text-blue-500 font-bold">
                           {formatPrice(p.price)}
                         </span>
 
