@@ -14,7 +14,7 @@ export default function VideoSection() {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const { vendorId } = useVendor();
-console.log(videoList)
+
   const fetchVideos = async () => {
     try {
       const res = await axios.get(`${ApiUrls.videos}vendor/${vendorId}/`);

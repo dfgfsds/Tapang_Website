@@ -27,7 +27,7 @@ export default function ProductVideoModal({ videoList, initialIndex, onClose }: 
     setCartId(storedCartId);
     setUserName(storedUserName);
   }, []);
-console.log(getUserId)
+  console.log(getUserId)
   const handleNext = () => {
     setCurrentIndex((prev: number) => (prev + 1) % videoList.length);
   };
@@ -57,7 +57,7 @@ console.log(getUserId)
 
     }
   }
-    const getVideoEmbed = (url: string) => {
+  const getVideoEmbed = (url: string) => {
     if (!url) return null;
     if (url.includes("youtube.com/watch?v=")) return url.replace("watch?v=", "embed/");
     if (url.includes("youtu.be/")) return url.replace("youtu.be/", "www.youtube.com/embed/");
@@ -182,12 +182,25 @@ console.log(getUserId)
             </button>
             <button
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
+              // onClick={(e) => {
+              //   e.stopPropagation();
+              //   if (getUserId) {
+              //     handleAddCart(currentVideo?.product_details?.id, 1);
+              //   } else {
+              //     onClose();
+              //     setSignInModal(true);
+              //   }
+              // }}
               onClick={(e) => {
                 e.stopPropagation();
                 if (getUserId) {
-                  handleAddCart(currentVideo?.product_details?.id, 1);
+                  if (currentVideo?.product_details?.variants?.length) {
+                    router.push(`/products/${currentVideo?.product_details?.slug_name}`);
+                  } else {
+                    handleAddCart(currentVideo?.product_details?.id, 1);
+                  }
                 } else {
-                  onClose();
+                  // onClose();
                   setSignInModal(true);
                 }
               }}
