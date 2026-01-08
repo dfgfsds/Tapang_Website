@@ -28,7 +28,7 @@ export default function HeroSection() {
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const { vendorId } = useVendor();
 
-console.log(banners)
+  console.log(banners)
   // Refs for GSAP parallax animation
   const imgRefs = useRef([
     useRef<HTMLDivElement>(null),
@@ -125,7 +125,7 @@ console.log(banners)
   if (isMobile === null) return null;
   return (
     <>
-      <div className="hero-container relative h-[70vh] md:h-[60vh] overflow-hidden">
+      {/* <div className="hero-container relative h-[70vh] md:h-[60vh] overflow-hidden">
         {banners.length > 0 &&
           banners.map((banner, index) => (
             <Link
@@ -144,7 +144,6 @@ console.log(banners)
             </Link>
           ))}
 
-        {/* Left Arrow */}
         <button
           onClick={prevSlide}
           className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 transition"
@@ -152,14 +151,58 @@ console.log(banners)
           <ChevronLeft className="h-6 w-6 text-white" />
         </button>
 
-        {/* Right Arrow */}
         <button
           onClick={nextSlide}
           className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 transition"
         >
           <ChevronRight className="h-6 w-6 text-white" />
         </button>
+      </div> */}
+
+
+      <div className="relative w-full">
+        {/* Banner container */}
+        <div className="relative w-full aspect-[16/6] overflow-hidden bg-[#dcd8c4]">
+          {banners.length > 0 &&
+            banners.map((banner, index) => (
+              <Link
+                key={banner.id}
+                href={banner.target_url || "#"}
+                className={`absolute inset-0 transition-opacity duration-1000
+            ${index === currentIndex ? "opacity-100 z-20" : "opacity-0 z-10"}
+          `}
+              >
+                <img
+                  src={banner.image_url}
+                  alt="Banner"
+                  className="w-full h-full object-contain object-center"
+                />
+              </Link>
+            ))}
+        </div>
+
+        {/* Prev */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30"
+        >
+          <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
+            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-white" />
+          </span>
+        </button>
+
+        {/* Next */}
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30"
+        >
+          <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
+            <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-white" />
+          </span>
+        </button>
       </div>
+
+
     </>
   );
 }
