@@ -162,6 +162,33 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
   };
 
 
+   const getDisplayPricing = () => {
+    // 1️⃣ Size selected
+    if (selectedSize) {
+      return {
+        price: Number(selectedSize.product_size_price),
+        discount: Number(selectedSize.product_size_discount),
+      };
+    }
+
+    // 2️⃣ Variant selected (no size)
+    if (selectedVariant) {
+      return {
+        price: Number(selectedVariant.product_variant_price),
+        discount: Number(selectedVariant.product_variant_discount),
+      };
+    }
+
+    // 3️⃣ Normal product
+    return {
+      price: Number(product?.price),
+      discount: Number(product?.discount),
+    };
+  };
+
+  const { price, discount } = getDisplayPricing();
+
+
   return (
     <div className="space-y-6">
       <div>
@@ -173,8 +200,7 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
           </span>
         </div>
       </div>
-      <div className='flex gap-5'>
-        {/* <div className="text-2xl font-bold text-blue-700">{formatPrice(product?.price)}</div> */}
+      {/* <div className='flex gap-5'>
         <div className="text-2xl font-bold text-blue-600">
           {formatPrice(getDisplayPrice())}
         </div>
@@ -186,8 +212,20 @@ export default function ProductInfo({ product, cartDetails, getUserId, getCartId
             </>
           )}
 
-      </div>
+      </div> */}
+        <div className="flex items-center gap-4">
+          {/* MAIN PRICE */}
+          <span className="text-2xl font-bold text-red-600">
+            {formatPrice(price)}
+          </span>
 
+          {/* DISCOUNT PRICE */}
+          {discount > 0 && discount !== price && (
+            <span className="text-xl font-semibold line-through text-gray-500">
+              {formatPrice(discount)}
+            </span>
+          )}
+        </div>
 
       {/* <p className="text-muted-foreground">{product?.description}</p> */}
       <div dangerouslySetInnerHTML={{ __html: product?.description }} className="quill-content" />
