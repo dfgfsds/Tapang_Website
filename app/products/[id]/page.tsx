@@ -1,4 +1,3 @@
-"use client";
 import ProductPageClient from './ProductPageClient';
 
 

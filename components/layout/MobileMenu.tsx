@@ -41,8 +41,8 @@ export default function MobileMenu() {
         <SheetHeader>
           <SheetTitle className="text-left">
             <span className="text-xl font-bold">
-              <span className="text-blue-700">Shany </span>
-              <span className="text-blue-700">Fashion</span>
+              <span className="text-blue-700">Tapang</span>
+              <span className="text-blue-700">Thalaivare</span>
             </span>
           </SheetTitle>
         </SheetHeader>
@@ -52,7 +52,7 @@ export default function MobileMenu() {
           <MobileLink href="/categories" setOpen={setOpen}>Categories</MobileLink>
           <MobileLink href="/about" setOpen={setOpen}>About Us</MobileLink>
           <MobileLink href="/contact" setOpen={setOpen}>Contact</MobileLink>
-          <MobileLink href="/blog" setOpen={setOpen}>Blog</MobileLink>
+          {/* <MobileLink href="/blog" setOpen={setOpen}>Blog</MobileLink> */}
 
           {isLoggedIn && (
             <Button
