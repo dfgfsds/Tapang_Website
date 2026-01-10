@@ -21,7 +21,7 @@ export default function ProductPageClient({ id }: any) {
   const [getUserName, setUserName] = useState<string | null>(null);
   const router = useRouter();
   const { vendorId } = useVendor();
-console.log(products)
+
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
     const storedCartId = localStorage.getItem('cartId');
@@ -35,7 +35,7 @@ console.log(products)
 
   const productDetails = products?.data?.find((item: any) => String(item?.slug_name) === String(id));
 
-    // getCartItemsProductSizesWithVariantsApi
+  // getCartItemsProductSizesWithVariantsApi
   const getCartItemsProductSizesWithVariantsData: any = useQuery({
     queryKey: ['getCartItemsProductSizesWithVariantsData', getUserId, vendorId],
     queryFn: () => getCartItemsProductSizesWithVariantsApi(`?user_id=${getUserId}&vendor_id=${vendorId}`),
@@ -60,11 +60,12 @@ console.log(products)
   }).filter(Boolean);
 
   const totalQty = matchingData?.reduce((sum: number, item: any) => sum + (item?.cartQty || 0), 0);
-
+  
+  if (!productDetails) return null;
   return (
     <>
 
-        <div className="bg-blue-50">
+      <div className="bg-blue-50">
         <div className="container mx-auto px-4 py-8">
           <div className="flex mt-auto  !cursor-pointer mb-3"
             onClick={() => router.back()}
@@ -76,7 +77,7 @@ console.log(products)
             <ProductGallery product={productDetails} />
             <ProductInfo product={productDetails} cartDetails={matchingData} getUserId={getUserId}
               getCartId={getCartId} getUserName={getUserName} totalQty={totalQty}
-               cartItem={getCartItemsProductSizesWithVariantsData?.data?.data?.cart_items}
+              cartItem={getCartItemsProductSizesWithVariantsData?.data?.data?.cart_items}
             />
           </div>
 
