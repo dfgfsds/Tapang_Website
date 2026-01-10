@@ -49,7 +49,7 @@ export default function Header() {
                   src={logo}
                   height={60}
                   width={60}
-                  alt="Shany Fashion logo"
+                  alt="Tapang logo"
                   className="object-contain"
                 />
               </Link>
