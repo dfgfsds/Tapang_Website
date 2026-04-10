@@ -1,43 +1,16 @@
 'use client';
-import Banner1 from '../../public/img/banner1.jpg';
-import Banner2 from '../../public/img/websiteBanner2.jpg';
-import Banner3 from '../../public/img/websiteBanner3.jpg';
-import Banner4 from '../../public/img/wensiteBanner4.jpg';
-import Banner5 from '../../public/img/websiteBanner5.jpg';
-import mobileBanner1 from '../../public/img/mobileBanner1.jpg'
-import mobileBanner2 from '../../public/img/mobileBanner2.jpg'
-import mobileBanner3 from '../../public/img/mobileBanner3.jpg'
-import mobileBanner4 from '../../public/img/mobileBanner4.jpg'
-import mobileBanner5 from '../../public/img/mobileBanner5.jpg'
-import { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
 import ApiUrls from '@/api-endpoints/ApiUrls';
 import { useVendor } from '@/context/VendorContext';
 
-
-// Register GSAP ScrollTrigger
-gsap.registerPlugin(ScrollTrigger);
-
 export default function HeroSection() {
   const [banners, setBanners] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const { vendorId } = useVendor();
-
-  console.log(banners)
-  // Refs for GSAP parallax animation
-  const imgRefs = useRef([
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-  ]);
 
   // 🧠 Fetch banners from API
   const bannerGetApi = async () => {
@@ -71,44 +44,6 @@ export default function HeroSection() {
     return () => clearInterval(timer);
   }, [banners]);
 
-  // 🎞 GSAP animation setup
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const images = imgRefs.current.map((ref, i) => ({
-      ref,
-      x: i % 2 === 0 ? -150 + i * 30 : 150 - i * 30,
-      y: i % 2 === 0 ? 200 - i * 40 : -200 + i * 40,
-      scale: 1.2 + i * 0.05,
-      rotate: i % 2 === 0 ? 10 : -10,
-      delay: i * 0.2,
-    }));
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.hero-container',
-        start: 'top 80%',
-        end: 'bottom 20%',
-        scrub: 1,
-      },
-    });
-
-    images.forEach(({ ref, x, y, scale, rotate, delay }) => {
-      if (ref.current) {
-        tl.to(
-          ref.current,
-          { x, y, scale, rotate, ease: 'power2.inOut', duration: 1.5 },
-          delay
-        );
-      }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-      tl.kill();
-    };
-  }, []);
-
   // 🧭 Navigation buttons
   const nextSlide = () => {
     if (banners.length) {
@@ -122,87 +57,59 @@ export default function HeroSection() {
     }
   };
 
-  if (isMobile === null) return null;
+  // We show a placeholder with the same aspect ratio if isMobile is still null (initial hydration)
+  // This prevents the "white screen" flash by maintaining layout stability.
+  const isLoading = isMobile === null || banners.length === 0;
+
   return (
-    <>
-      {/* <div className="hero-container relative h-[70vh] md:h-[60vh] overflow-hidden">
-        {banners.length > 0 &&
+    <div className="relative w-full">
+      {/* Banner container */}
+      <div className="relative w-full aspect-[16/6] overflow-hidden bg-[#dcd8c4]">
+        {banners.length > 0 ? (
           banners.map((banner, index) => (
             <Link
               key={banner.id}
-              href={banner.target_url || '#'}
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentIndex ? 'opacity-100' : 'opacity-0'
-                }`}
+              href={banner.target_url || "#"}
+              className={`absolute inset-0 transition-opacity duration-1000
+                ${index === currentIndex ? "opacity-100 z-20" : "opacity-0 z-10"}
+              `}
             >
-              <div
-                ref={imgRefs.current[index % imgRefs.current.length]}
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${banner.image_url})`,
-                }}
+              <img
+                src={banner.image_url}
+                alt="Banner"
+                className="w-full h-full object-contain object-center"
               />
             </Link>
-          ))}
-
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 transition"
-        >
-          <ChevronLeft className="h-6 w-6 text-white" />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 transition"
-        >
-          <ChevronRight className="h-6 w-6 text-white" />
-        </button>
-      </div> */}
-
-
-      <div className="relative w-full">
-        {/* Banner container */}
-        <div className="relative w-full aspect-[16/6] overflow-hidden bg-[#dcd8c4]">
-          {banners.length > 0 &&
-            banners.map((banner, index) => (
-              <Link
-                key={banner.id}
-                href={banner.target_url || "#"}
-                className={`absolute inset-0 transition-opacity duration-1000
-            ${index === currentIndex ? "opacity-100 z-20" : "opacity-0 z-10"}
-          `}
-              >
-                <img
-                  src={banner.image_url}
-                  alt="Banner"
-                  className="w-full h-full object-contain object-center"
-                />
-              </Link>
-            ))}
-        </div>
-
-        {/* Prev */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-30"
-        >
-          <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
-            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-white" />
-          </span>
-        </button>
-
-        {/* Next */}
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-30"
-        >
-          <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
-            <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-white" />
-          </span>
-        </button>
+          ))
+        ) : (
+          /* Placeholder / Skeleton while loading */
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 animate-pulse">
+            <div className="text-gray-300">Loading Banners...</div>
+          </div>
+        )}
       </div>
 
+      {/* Prev */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-30"
+        aria-label="Previous slide"
+      >
+        <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
+          <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-white" />
+        </span>
+      </button>
 
-    </>
+      {/* Next */}
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-30"
+        aria-label="Next slide"
+      >
+        <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
+          <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-white" />
+        </span>
+      </button>
+    </div>
   );
 }
