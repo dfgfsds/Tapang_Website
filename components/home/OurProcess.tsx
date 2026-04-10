@@ -72,7 +72,7 @@ const steps = [
 
 
   return (
-    <section className="py-20 bg-secBgImage bg-cover bg-center bg-no-repeat w-full">
+    <section className="py-20 bg-blue-50 bg-secBgImage bg-cover bg-center bg-no-repeat w-full">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl text-[#3529d9] font-bold mb-4">Our Process</h2>

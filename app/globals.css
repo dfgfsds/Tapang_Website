@@ -104,8 +104,15 @@
     @apply border-border;
   }
 
+  html {
+
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
+
+    overflow-x: hidden;
   }
 }
 
@@ -114,6 +121,7 @@
   0% {
     transform: translateX(-150%) skewX(-30deg);
   }
+
   100% {
     transform: translateX(250%) skewX(-30deg);
   }
@@ -121,4 +129,269 @@
 
 .animate-shine {
   animation: shine 2.5s infinite;
+}
+
+/* ============================================================
+   HERO SLIDER — Pure CSS, no external slider package
+   ============================================================ */
+
+/* Wrapper */
+.hero-slider-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Track — fixed height + bg-black prevents white flash during image load */
+.hero-slider-track {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero-slider-track {
+    height: 450px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-slider-track {
+    height: 550px;
+  }
+}
+
+/* Each slide — all stacked on top of each other */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  display: block;
+  opacity: 0;
+  z-index: 10;
+  transition: opacity 0.7s ease-in-out;
+}
+
+/* Active slide */
+.hero-slide--active {
+  opacity: 1;
+  z-index: 20;
+}
+
+/* Image fills the slide */
+.hero-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Skeleton placeholder */
+.hero-slide-skeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Prev / Next buttons */
+.hero-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .hero-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.hero-btn:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.hero-btn--prev {
+  left: 16px;
+}
+
+.hero-btn--next {
+  right: 16px;
+}
+
+.hero-btn-icon {
+  width: 18px;
+  height: 18px;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .hero-btn-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Dot indicators */
+.hero-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  padding: 0;
+}
+
+.hero-dot--active {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+/* ============================================================
+   CATEGORY MARQUEE — Pure CSS infinite auto-scroll
+   ============================================================ */
+
+.cat-marquee {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.cat-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: cat-marquee-scroll 20s linear infinite;
+}
+
+.cat-marquee:hover .cat-marquee-track {
+  animation-play-state: paused;
+}
+
+.cat-marquee-item {
+  flex-shrink: 0;
+  width: 220px;
+  padding: 0 8px;
+}
+
+
+
+/* Tablet */
+@media (min-width: 640px) {
+  .cat-marquee-item {
+    flex: 0 0 50%;
+  }
+}
+
+
+@media (min-width: 1024px) {
+  .cat-marquee-item {
+    flex: 0 0 25%;
+  }
+}
+
+@keyframes cat-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+/* ============================================================
+   REVIEW MARQUEE — Pure CSS infinite auto-scroll
+   ============================================================ */
+
+.review-marquee {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.review-marquee--centered {
+  /* Create a smooth fade on left and right for a 'centered' focus */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 15%,
+    black 85%,
+    transparent
+  );
+}
+
+.review-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: review-marquee-scroll 45s linear infinite;
+  padding: 20px 0;
+}
+
+.review-marquee:hover .review-marquee-track {
+  animation-play-state: paused;
+}
+
+.review-marquee-item {
+  flex-shrink: 0;
+  width: 300px;
+  padding: 0 12px;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .review-marquee-item {
+    width: 350px;
+  }
+}
+
+@keyframes review-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-16.666%);
+  }
 }
