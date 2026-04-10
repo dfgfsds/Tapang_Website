@@ -55,11 +55,11 @@ export default function VideoSection() {
     return null;
   };
 
-  // ✅ Don't render if there are no videos
-  if (!videoList.length) return null;
+  // ✅ Don't render content if there are no videos (but keep a stable placeholder)
+  if (!videoList.length) return <div className="w-full" style={{ minHeight: '0px' }} />;
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-white">
       <h2 className="text-xl font-semibold text-center mb-4">Shop By Videos</h2>
 
       <div

@@ -9,35 +9,25 @@ import { useVendor } from '@/context/VendorContext';
 export default function HeroSection() {
   const [banners, setBanners] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const { vendorId } = useVendor();
 
   // 🧠 Fetch banners from API
-  const bannerGetApi = async () => {
-    try {
-      const res = await axios.get(`${ApiUrls.banners}?vendorId=${vendorId}`);
-      setBanners(res.data.banners || []);
-    } catch (error) {
-      console.error('Error fetching banners:', error);
-    }
-  };
-
   useEffect(() => {
-    bannerGetApi();
+    if (!vendorId) return;
+    const fetchBanners = async () => {
+      try {
+        const res = await axios.get(`${ApiUrls.banners}?vendorId=${vendorId}`);
+        setBanners(res.data.banners || []);
+      } catch (error) {
+        console.error('Error fetching banners:', error);
+      }
+    };
+    fetchBanners();
   }, [vendorId]);
-
-  // 📱 Detect mobile view
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
 
   // 🌀 Auto slide every 5s
   useEffect(() => {
-    if (!banners.length) return;
+    if (banners.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
     }, 5000);
@@ -45,71 +35,60 @@ export default function HeroSection() {
   }, [banners]);
 
   // 🧭 Navigation buttons
-  const nextSlide = () => {
-    if (banners.length) {
-      setCurrentIndex((current) => (current + 1) % banners.length);
-    }
-  };
-
-  const prevSlide = () => {
-    if (banners.length) {
-      setCurrentIndex((current) => (current - 1 + banners.length) % banners.length);
-    }
-  };
-
-  // We show a placeholder with the same aspect ratio if isMobile is still null (initial hydration)
-  // This prevents the "white screen" flash by maintaining layout stability.
-  const isLoading = isMobile === null || banners.length === 0;
+  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % banners.length);
+  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
 
   return (
-    <div className="relative w-full">
-      {/* Banner container */}
-      <div className="relative w-full aspect-[16/6] overflow-hidden bg-[#dcd8c4]">
+    <div className="hero-slider-wrapper">
+      {/* 🖼 Slider container — bg-black prevents white flash if image not loaded yet */}
+      <div className="hero-slider-track">
         {banners.length > 0 ? (
           banners.map((banner, index) => (
             <Link
               key={banner.id}
-              href={banner.target_url || "#"}
-              className={`absolute inset-0 transition-opacity duration-1000
-                ${index === currentIndex ? "opacity-100 z-20" : "opacity-0 z-10"}
-              `}
+              href={banner.target_url || '#'}
+              className={`hero-slide ${index === currentIndex ? 'hero-slide--active' : ''}`}
             >
               <img
                 src={banner.image_url}
                 alt="Banner"
-                className="w-full h-full object-contain object-center"
+                loading="eager"
+                className="hero-slide-img"
               />
             </Link>
           ))
         ) : (
-          /* Placeholder / Skeleton while loading */
-          <div className="w-full h-full flex items-center justify-center bg-gray-100 animate-pulse">
-            <div className="text-gray-300">Loading Banners...</div>
+          <div className="hero-slide-skeleton" />
+        )}
+
+        {/* Dots */}
+        {banners.length > 1 && (
+          <div className="hero-dots">
+            {banners.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`hero-dot ${i === currentIndex ? 'hero-dot--active' : ''}`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
         )}
       </div>
 
-      {/* Prev */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30"
-        aria-label="Previous slide"
-      >
-        <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
-          <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-white" />
-        </span>
-      </button>
+      {/* ◀ Prev */}
+      {banners.length > 1 && (
+        <>
+          <button onClick={prevSlide} className="hero-btn hero-btn--prev" aria-label="Previous slide">
+            <ChevronLeft className="hero-btn-icon" />
+          </button>
 
-      {/* Next */}
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30"
-        aria-label="Next slide"
-      >
-        <span className="inline-flex items-center justify-center w-8 md:w-10 h-8 md:h-10 rounded-full bg-black/30 hover:bg-black/50 transition">
-          <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-white" />
-        </span>
-      </button>
+          {/* ▶ Next */}
+          <button onClick={nextSlide} className="hero-btn hero-btn--next" aria-label="Next slide">
+            <ChevronRight className="hero-btn-icon" />
+          </button>
+        </>
+      )}
     </div>
   );
 }
