@@ -2,25 +2,37 @@
 import Link from "next/link";
 import { useCategories } from "@/context/CategoriesContext";
 import Slider from "react-slick";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function FeaturedCategories() {
-  const { categories }: any = useCategories();
+  const { categories, isLoading }: any = useCategories();
 
   const fallbackImage =
     "https://www.archanaskitchen.com/images/archanaskitchen/Dessert_Cookies/Indian_Spicy_Masala_Cookie_Recipe_Khara_Biscuit-1.jpg";
 
   const [slidesToShow, setSlidesToShow] = useState(5);
 
-  // ✅ Remove duplicate categories (just in case)
-  const uniqueCategories = categories?.data
-    ? categories.data.filter(
+
+  const lastValidCategories = useRef<any[]>([]);
+
+
+  const uniqueCategories = useMemo(() => {
+    const rawData = categories?.data || [];
+
+    if (rawData.length === 0) {
+      return lastValidCategories.current.length > 0 ? lastValidCategories.current : [];
+    }
+
+    const filtered = rawData.filter(
       (cat: any, index: number, self: any[]) =>
         index === self.findIndex((c) => c.id === cat.id)
-    )
-    : [];
+    );
+
+    lastValidCategories.current = filtered;
+    return filtered;
+  }, [categories?.data]);
 
   useEffect(() => {
     const updateSlidesToShow = () => {
@@ -36,6 +48,9 @@ export default function FeaturedCategories() {
     window.addEventListener("resize", updateSlidesToShow);
     return () => window.removeEventListener("resize", updateSlidesToShow);
   }, []);
+
+  // ✅ Determine if we should show skeletons
+  const showSkeleton = isLoading && uniqueCategories.length === 0;
 
   // ✅ If only one category → disable infinite loop and autoplay
   const isSingleCategory = uniqueCategories.length <= 1;
@@ -53,7 +68,7 @@ export default function FeaturedCategories() {
   };
 
   return (
-    <section className="py-10 bg-catBgImage">
+    <section className="py-10 bg-catBgImage" style={{ minHeight: '400px' }}>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
@@ -63,50 +78,63 @@ export default function FeaturedCategories() {
           </p>
         </div>
 
-        {/* ✅ If only 1 category, no slider — just show it */}
-        {isSingleCategory ? (
-          <div className="flex justify-center">
-            {uniqueCategories.map((category: any) => (
-              <Link
-                key={category.id}
-                href={`/categories/${category.slug_name}`}
-                className="block group flex flex-col items-center text-center p-4 rounded-xl transition-all duration-300"
-              >
-                <div className="w-full max-w-[12rem] aspect-square mb-4 overflow-hidden rounded-full mx-auto shadow-lg border border-gray-200">
-                  <img
-                    src={category.image || fallbackImage}
-                    alt={category.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-                  {category.name}
-                </h3>
-              </Link>
+        {showSkeleton ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={`cat-skeleton-${i}`} className="flex flex-col items-center p-4 animate-pulse">
+                <div className="w-full max-w-[12rem] aspect-square mb-4 rounded-full bg-gray-200 shadow-sm shadow-gray-300"></div>
+                <div className="h-6 w-3/4 bg-gray-200 rounded"></div>
+              </div>
             ))}
           </div>
         ) : (
-          <Slider {...settings}>
-            {uniqueCategories.map((category: any) => (
-              <div key={category?.slug_name} className="px-2">
-                <Link
-                  href={`/categories/${category?.slug_name}`}
-                  className="block group flex flex-col items-center text-center p-4 rounded-xl transition-all duration-300"
-                >
-                  <div className="w-full max-w-[12rem] aspect-square mb-4 overflow-hidden rounded-full mx-auto shadow-lg border border-gray-200">
-                    <img
-                      src={category.image || fallbackImage}
-                      alt={category.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-                    {category.name}
-                  </h3>
-                </Link>
+          <>
+            {/* ✅ If only 1 category, no slider — just show it */}
+            {isSingleCategory ? (
+              <div className="flex justify-center">
+                {uniqueCategories.map((category: any) => (
+                  <Link
+                    key={category.id}
+                    href={`/categories/${category.slug_name}`}
+                    className="block group flex flex-col items-center text-center p-4 rounded-xl transition-all duration-300"
+                  >
+                    <div className="w-full max-w-[12rem] aspect-square mb-4 overflow-hidden rounded-full mx-auto shadow-lg border border-gray-200">
+                      <img
+                        src={category.image || fallbackImage}
+                        alt={category.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                      {category.name}
+                    </h3>
+                  </Link>
+                ))}
               </div>
-            ))}
-          </Slider>
+            ) : (
+              <Slider {...settings}>
+                {uniqueCategories.map((category: any) => (
+                  <div key={category?.slug_name || category?.id} className="px-2">
+                    <Link
+                      href={`/categories/${category?.slug_name}`}
+                      className="block group flex flex-col items-center text-center p-4 rounded-xl transition-all duration-300"
+                    >
+                      <div className="w-full max-w-[12rem] aspect-square mb-4 overflow-hidden rounded-full mx-auto shadow-lg border border-gray-200">
+                        <img
+                          src={category.image || fallbackImage}
+                          alt={category.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                        {category.name}
+                      </h3>
+                    </Link>
+                  </div>
+                ))}
+              </Slider>
+            )}
+          </>
         )}
 
         {/* Footer */}
